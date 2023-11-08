@@ -7,7 +7,7 @@
   elements:
   - title: Monthly Order Status
     name: Monthly Order Status
-    model: mysql
+    model: test_mysql
     explore: orders
     type: looker_column
     fields: [orders.status, orders.count, orders.order_month]
@@ -53,7 +53,7 @@
     height: 7
   - title: Quarterly Sale
     name: Quarterly Sale
-    model: mysql
+    model: test_mysql
     explore: payments
     type: looker_pie
     fields: [payments.payment_quarter, sum_of_amount]
@@ -101,7 +101,7 @@
     height: 10
   - title: Top In Stock Products
     name: Top In Stock Products
-    model: mysql
+    model: test_mysql
     explore: products
     type: looker_bar
     fields: [products.quantity_in_stock, products.product_name]
