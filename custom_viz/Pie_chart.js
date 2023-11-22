@@ -80,14 +80,14 @@
                 datasets: [{ data: FinalData }],
                 labels: finalLabel
             }
-            //console.log(finalCharData)
+            console.log(finalCharData)
             //console.log(chartData)
             // Update the chart with the data
             this.chart.data = finalCharData;
 
 
 
-            # this.chart.update();
+            this.chart.update();
         }
 
 
