@@ -51,7 +51,7 @@
                     borderColor: config.color || '#3498db',
                     backgroundColor: config.color || '#3498db',
                 }],
-                labels: finalLabel
+                labels: []
             };
             console.log("Radar chart")
             console.log(finalChartData)
