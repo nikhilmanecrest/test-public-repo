@@ -50,7 +50,7 @@
                     borderColor: config.color || '#3498db',
                     backgroundColor: config.color || '#3498db',
                 }],
-                labels: finalLabel
+                #//labels: finalLabel
             };
 
             // Update the chart with the data
