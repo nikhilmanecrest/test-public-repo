@@ -15,7 +15,7 @@ looker.plugins.visualizations.add({
   },
     create: function (element, config) {
       var canvas = document.createElement('canvas');
-      canvas.style = "border:thin solid black";
+      canvas.style = "border:thin solid black;position:absolute; width: 600px;";
       element.appendChild(canvas);
     },
 
