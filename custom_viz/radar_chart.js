@@ -7,8 +7,13 @@
             color: {
                 type: 'string',
                 label: 'Color',
-                // default: '#3498db'
+                 default: '#3498db'
             }
+          legend: {
+            type: 'boolean',
+            label: 'Show Legend',
+            default: false
+          }
         },
         create: function (element, config) {
             // Create a canvas element for the chart
@@ -19,6 +24,11 @@
             // Initialize the Chart.js instance
             this.chart = new Chart(canvas, {
                 type: 'radar',
+                options: {
+                  legend: {
+                    display: config.legend
+                  }
+              }
             });
         },
         update: function (data, element, config, queryResponse) {
@@ -51,7 +61,7 @@
                     borderColor: config.color || '#3498db',
                     backgroundColor: config.color || '#3498db',
                 }],
-                labels: []
+                labels: finalLabel
             };
             console.log("Radar chart")
             console.log(finalChartData)
