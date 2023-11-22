@@ -42,9 +42,9 @@
 
             // Add the sum to the finalData array
             finalData.push(sum);
-            console.log(finalData)
+            //console.log(finalData)
             finalLabel.push("Other");
-            console.log(finalLabel)
+            //console.log(finalLabel)
             var finalChartData = {
                 datasets: [{
                     data: finalData,
@@ -53,7 +53,8 @@
                 }],
                 labels: finalLabel
             };
-
+            console.log("Radar chart")
+            console.log(finalChartData)
             // Update the chart with the data
             this.chart.data = finalChartData;
             this.chart.update();
