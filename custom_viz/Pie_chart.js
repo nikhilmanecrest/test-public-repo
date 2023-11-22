@@ -21,7 +21,7 @@
 
             // Initialize the Chart.js instance
             this.chart = new Chart(canvas, {
-                type: 'pie',
+                type: 'line',
             });
         },
         update: function (data, element, config, queryResponse) {
