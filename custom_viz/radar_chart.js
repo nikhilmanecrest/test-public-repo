@@ -57,10 +57,22 @@
             //console.log(finalLabel)
             var finalChartData = {
                 datasets: [{
+                    label: "First Dataset"
                     data: finalData,
                     borderColor: config.color || '#3498db',
                     backgroundColor: config.color || '#3498db',
-                }],
+                },
+                {
+                label: 'My Second Dataset',
+                data: [28, 48, 40, 19, 96, 27, 100],
+                fill: true,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgb(54, 162, 235)',
+                pointBackgroundColor: 'rgb(54, 162, 235)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(54, 162, 235)'
+              }],
                 labels: finalLabel
             };
             console.log("Radar chart")
