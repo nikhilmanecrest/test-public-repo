@@ -87,7 +87,7 @@
 
 
 
-            this.chart.update();
+            # this.chart.update();
         }
 
 
