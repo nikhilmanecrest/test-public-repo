@@ -22,6 +22,21 @@
             // Initialize the Chart.js instance
             this.chart = new Chart(canvas, {
                 type: 'pie',
+                onClick: function(event, elements) {
+                  if (elements && elements.length > 0) {
+                    // Trigger drill-down
+                    console.log(elements, event);
+                    var data = event.chart.config._config.data;
+                    var label = data.labels;
+                    var value = data.datasets[0].data;
+                    console.log(data, label, value)
+                  LookerCharts.Utils.openDrillMenu({
+                    links: value[elements[0].index].links,
+                  event: {pageX:event.x, pageY:event.y}
+                });
+                console.log(value[elements[0].index].links)
+               }
+              }
             });
         },
         update: function (data, element, config, queryResponse) {
