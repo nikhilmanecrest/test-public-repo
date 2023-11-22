@@ -10,9 +10,6 @@
                 // default: '#3498db'
             }
         },
-        handleErrors: function (data, resp) {
-            return true;
-        },
         create: function (element, config) {
             // Create a canvas element for the chart
             var canvas = document.createElement('canvas');
@@ -27,33 +24,35 @@
         update: function (data, element, config, queryResponse) {
             // Extract the data from Looker response
             var values = data;
+
             // Generate the chart data
-            var FinalData = [];
+            var finalData = [];
             var finalLabel = [];
-            let sum = 0;
+            var sum = 0;
+
             values.forEach(function (currentValue, index) {
-                var cell = currentValue[queryResponse.fields.measure_like[0].name];
                 if (index < 19) {
-                    var cellElement = '<p>' + cell.value + ' </p>';
-                    htmlData = LookerCharts.Utils.htmlForCell(cell)
-                    FinalData.push(cell.value);
+                    var cell = currentValue[queryResponse.fields.measure_like[0].name];
+                    finalData.push(cell.value);
                     finalLabel.push(currentValue[queryResponse.fields.dimensions[0].name].value);
                 } else {
-                    sum = sum + cell.value;
+                    sum += currentValue[queryResponse.fields.measure_like[0].name].value;
                 }
-            })
-            console.log(sum)
-            FinalData.push(sum); // Add the sum to the FinalData array
-            finalLabel.push("Other")
+            });
+
+            // Add the sum to the finalData array
+            finalData.push(sum);
+            finalLabel.push("Other");
+
             var finalChartData = {
                 datasets: [{
-                    data: FinalData,
+                    data: finalData,
                     borderColor: config.color || '#3498db',
                     backgroundColor: config.color || '#3498db',
                 }],
                 labels: finalLabel
-            }
-            console.log(finalChartData)
+            };
+
             // Update the chart with the data
             this.chart.data = finalChartData;
             this.chart.update();
