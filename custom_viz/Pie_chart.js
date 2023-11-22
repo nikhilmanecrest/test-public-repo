@@ -34,15 +34,15 @@
             values.forEach(function (currentValue, index) {
                 var cell = currentValue[queryResponse.fields.measure_like[0].name];
                 if (index < 19) {
-                    # var cellElement = '<p>' + cell.value + ' </p>';
-                    # htmlData = LookerCharts.Utils.htmlForCell(cell)
+                    // var cellElement = '<p>' + cell.value + ' </p>';
+                    // htmlData = LookerCharts.Utils.htmlForCell(cell)
                     FinalData.push(cell);
                     finalLabel.push(currentValue[queryResponse.fields.dimensions[0].name].value);
                 } else {
                     sum = sum + currentValue[queryResponse.fields.measure_like[0].name].value;
                 }
             })
-            # console.log(sum)
+            // console.log(sum)
             finalLabel.push("Other")
             var finalCharData = {
                 datasets: [{ data: FinalData }],
