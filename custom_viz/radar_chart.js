@@ -8,7 +8,7 @@
                 type: 'string',
                 label: 'Color',
                  default: '#3498db'
-            }
+            },
           legend: {
             type: 'boolean',
             label: 'Show Legend',
