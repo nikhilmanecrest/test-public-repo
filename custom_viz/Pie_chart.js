@@ -78,7 +78,7 @@
             FinalData.push({ rendered: sum.toString(), links: other_links, value: sum })
             var finalCharData = {
                 datasets: [{ data: FinalData }],
-                labels: finalLabel
+                # labels: finalLabel
             }
             console.log(finalCharData)
             //console.log(chartData)
