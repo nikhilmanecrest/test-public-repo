@@ -58,7 +58,7 @@
             data2=[28, 48, 40, 19, 96, 27, 100]
             var finalChartData = {
                 datasets: [{
-                    label: 'First Dataset'
+                    label: 'First Dataset',
                     data: finalData,
                     borderColor: config.color || '#3498db',
                     backgroundColor: config.color || '#3498db',
