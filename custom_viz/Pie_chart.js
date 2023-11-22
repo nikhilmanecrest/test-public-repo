@@ -1,46 +1,103 @@
 looker.plugins.visualizations.add({
-  id: "Pie_chart",
-  label: "Pie_chart",
+  id: 'my_custom_pie_chart',
+  label: 'My Custom Pie Chart',
   options: {
-    font_size: {
-      type: "string",
-      label: "Font Size",
-      values: [
-        {"Large": "large"},
-        {"Small": "small"}
-      ],
-      display: "radio",
-      default: "large"
-    }
-  },
-    create: function (element, config) {
-      var canvas = document.createElement('canvas');
-      canvas.style = "position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto; border:2px solid blue";
-      element.appendChild(canvas);
-      this.chart = new Chart(canvas, {
-                type: 'pie',
-                options: {
-                    legend: {
-                        display: false
-                    },
-                    onClick: function (event, elements) {
-                        if (elements && elements.length > 0) {
-                            console.log(elements, event);
-                            var data = event.chart.config._config.data;
-                            var label = data.labels;
-                            var value = data.datasets[0].data;
-                            console.log(data, label, value)
-                            console.log(value[elements[0].index].links)
-                        }
-                    }
-                }
-            });
+    color: {
+      type: 'array',
+      label: 'Colors',
+      display: 'colors',
+      default: ['#FF5733', '#33FF57', '#5733FF', '#FFD700', '#8A2BE2'],
     },
+  },
+  create: function (element, config) {
+    // Initialize the chart container
+    element.innerHTML = '<div id="myCustomPieChart"></div>';
+  },
+  update: function (data, element, config, queryResponse) {
+    // Get the data for the chart
+    const chartData = getChartData(data);
 
-    updateAsync: function (data, element, config, queryResponse, details, done) {
-        console.log(data);
-        this.chart.data = data
-        console.log("Data updated")
-        done();
-    }
+    // Clear the container before rendering
+    element.innerHTML = '';
+
+    // Set up the pie chart using D3.js
+    const width = element.clientWidth;
+    const height = element.clientHeight;
+    const radius = Math.min(width, height) / 2;
+
+    const svg = d3
+      .select(element)
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height)
+      .append('g')
+      .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+
+    const colorScale = d3.scaleOrdinal().range(config.options.color);
+
+    const pie = d3.pie().value(function (d) {
+      return d.value;
+    });
+
+    const path = d3
+      .arc()
+      .outerRadius(radius - 10)
+      .innerRadius(0);
+
+    const arc = svg
+      .selectAll('arc')
+      .data(pie(chartData))
+      .enter()
+      .append('g')
+      .attr('class', 'arc');
+
+    arc
+      .append('path')
+      .attr('d', path)
+      .attr('fill', function (d) {
+        return colorScale(d.data.label);
+      });
+
+    // Add legend
+    const legend = svg
+      .selectAll('.legend')
+      .data(chartData)
+      .enter()
+      .append('g')
+      .attr('class', 'legend')
+      .attr('transform', function (d, i) {
+        return 'translate(' + (width / 2 + 20) + ',' + (i * 20 - height / 2 + 10) + ')';
+      });
+
+    legend
+      .append('rect')
+      .attr('width', 18)
+      .attr('height', 18)
+      .style('fill', function (d) {
+        return colorScale(d.label);
+      });
+
+    legend
+      .append('text')
+      .attr('x', 30)
+      .attr('y', 9)
+      .attr('dy', '.35em')
+      .style('text-anchor', 'start')
+      .text(function (d) {
+        return d.label;
+      });
+  },
 });
+
+function getChartData(data) {
+  // Extract data from Looker data object
+  const labels = data.fields.dimension[0].name;
+  const values = data.fields.measure[0].name;
+
+  return data.data.map(function (row) {
+    return {
+      label: row[labels].value,
+      value: row[values].value,
+    };
+  });
+}
