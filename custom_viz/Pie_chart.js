@@ -40,11 +40,11 @@
                     finalLabel.push(currentValue[queryResponse.fields.dimensions[0].name].value);
                 } else {
                     sum = sum + currentValue[queryResponse.fields.measure_like[0].name].value;
-                  FinalData.push(sum)
                 }
             })
             // console.log(sum)
             finalLabel.push("Other")
+            FinalData.push(sum)
             var finalCharData = {
                 datasets: [{ data: FinalData }],
                  labels: finalLabel
