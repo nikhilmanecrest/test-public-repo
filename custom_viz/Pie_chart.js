@@ -1,103 +1,97 @@
-looker.plugins.visualizations.add({
-  id: 'my_custom_pie_chart',
-  label: 'My Custom Pie Chart',
-  options: {
-    color: {
-      type: 'array',
-      label: 'Colors',
-      display: 'colors',
-      default: ['#FF5733', '#33FF57', '#5733FF', '#FFD700', '#8A2BE2'],
-    },
-  },
-  create: function (element, config) {
-    // Initialize the chart container
-    element.innerHTML = '<div id="myCustomPieChart"></div>';
-  },
-  update: function (data, element, config, queryResponse) {
-    // Get the data for the chart
-    const chartData = getChartData(data);
+(function (looker, Chart) {
 
-    // Clear the container before rendering
-    element.innerHTML = '';
+    looker.plugins.visualizations.add({
+        id: 'custom_pie_chart_chartjs',
+        label: 'Custom Pie Chart (Chart.js)',
+        options: {
+            color: {
+                type: 'string',
+                label: 'Color',
+                // default: '#3498db'
+            }
+        },
+        handleErrors: function (data, resp) {
+            return true;
+        },
+        create: function (element, config) {
+            console.log("in create");
+            // console.log(element, config);
+            // Create a canvas element for the chart
+            var canvas = document.createElement('canvas');
+            canvas.setAttribute('id', 'customPieChartCanvas');
+            element.appendChild(canvas);
 
-    // Set up the pie chart using D3.js
-    const width = element.clientWidth;
-    const height = element.clientHeight;
-    const radius = Math.min(width, height) / 2;
+            // Initialize the Chart.js instance
+            this.chart = new Chart(canvas, {
+                type: 'pie',
+            });
+        },
+        update: function (data, element, config, queryResponse) {
+            // console.log(data, element, config, queryResponse);
+            // Extract the data from Looker response
+            var values = data;
+            // console.log(values);
+            // Generate the chart data
+            var chartData = {
+                datasets: [{
+                    data: values.map(function (d) {
+                        return d[queryResponse.fields.measure_like[0].name].value;
+                    }),
+                    // backgroundColor: Object.values(Utils.CHART_COLORS)
+                }],
+                labels: values.map(function (d, index) {
+                    if (index < 19) {
+                        return d[queryResponse.fields.dimensions[0].name].value;
+                    } else {
+                        return "Other";
+                    }
 
-    const svg = d3
-      .select(element)
-      .append('svg')
-      .attr('width', width)
-      .attr('height', height)
-      .append('g')
-      .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+                })
+            };
+            var FinalData = [];
+            var finalLabel = [];
+            let sum = 0;
+            var other_links = [];
+            values.forEach(function (currentValue, index) {
+                var cell = currentValue[queryResponse.fields.measure_like[0].name];
+                if (index < 19) {
 
-    const colorScale = d3.scaleOrdinal().range(config.options.color);
+                    var cellElement = '<p>' + cell.value + ' </p>';
+                    cellElement.onclick = function (event) {
+                        LookerCharts.Utils.openDrillMenu({
+                            links: cell.links,
+                            event: event
+                        });
+                    };
+                    htmlData = LookerCharts.Utils.htmlForCell(cell)
+                    // console.log(htmlData)
+                    FinalData.push(cell);
+                    finalLabel.push(currentValue[queryResponse.fields.dimensions[0].name].value);
+                } else {
+                    other_links.push(cell.links[0])
 
-    const pie = d3.pie().value(function (d) {
-      return d.value;
+                    sum = sum + currentValue[queryResponse.fields.measure_like[0].name].value;
+                }
+            })
+            console.log(sum)
+            finalLabel.push("Other")
+            FinalData.push({ rendered: sum.toString(), links: other_links, value: sum })
+            var finalCharData = {
+                datasets: [{ data: FinalData }],
+                labels: finalLabel
+            }
+            //console.log(finalCharData)
+            //console.log(chartData)
+            // Update the chart with the data
+            this.chart.data = finalCharData;
+
+
+
+            this.chart.update();
+        }
+
+
+
     });
 
-    const path = d3
-      .arc()
-      .outerRadius(radius - 10)
-      .innerRadius(0);
-
-    const arc = svg
-      .selectAll('arc')
-      .data(pie(chartData))
-      .enter()
-      .append('g')
-      .attr('class', 'arc');
-
-    arc
-      .append('path')
-      .attr('d', path)
-      .attr('fill', function (d) {
-        return colorScale(d.data.label);
-      });
-
-    // Add legend
-    const legend = svg
-      .selectAll('.legend')
-      .data(chartData)
-      .enter()
-      .append('g')
-      .attr('class', 'legend')
-      .attr('transform', function (d, i) {
-        return 'translate(' + (width / 2 + 20) + ',' + (i * 20 - height / 2 + 10) + ')';
-      });
-
-    legend
-      .append('rect')
-      .attr('width', 18)
-      .attr('height', 18)
-      .style('fill', function (d) {
-        return colorScale(d.label);
-      });
-
-    legend
-      .append('text')
-      .attr('x', 30)
-      .attr('y', 9)
-      .attr('dy', '.35em')
-      .style('text-anchor', 'start')
-      .text(function (d) {
-        return d.label;
-      });
-  },
-});
-
-function getChartData(data) {
-  // Extract data from Looker data object
-  const labels = data.fields.dimension[0].name;
-  const values = data.fields.measure[0].name;
-
-  return data.data.map(function (row) {
-    return {
-      label: row[labels].value,
-      value: row[values].value,
-    };
-  });
-}
+}(looker, Chart));
