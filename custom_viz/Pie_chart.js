@@ -53,15 +53,15 @@
                 var cell = currentValue[queryResponse.fields.measure_like[0].name];
                 if (index < 19) {
                     var cellElement = '<p>' + cell.value+' </p>';
-                    console.log(cellElement)
-                    console.log(cell)
-                    console.log(cell.links)
-                    cellElement.onclick = function(event) {
-                      LookerCharts.Utils.openDrillMenu({
-                        links: cell.links,
-                        event: event
-                      });
-                    };
+                    // console.log(cellElement)
+                    // console.log(cell)
+                    // console.log(cell.links)
+                    // cellElement.onclick = function(event) {
+                      // LookerCharts.Utils.openDrillMenu({
+                      //  links: cell.links,
+                     //  event: event
+                    //  });
+                   // };
                     FinalData.push(cell);
                     finalLabel.push(currentValue[queryResponse.fields.dimensions[0].name].value);
                 } else {
@@ -76,7 +76,7 @@
                 datasets: [{ data: FinalData }],
                  labels: finalLabel
             }
-            console.log(finalCharData)
+            // console.log(finalCharData)
             // Update the chart with the data
             this.chart.data = finalCharData;
             this.chart.update();
