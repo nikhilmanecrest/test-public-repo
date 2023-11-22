@@ -36,6 +36,9 @@
                 var cell = currentValue[queryResponse.fields.measure_like[0].name];
                 if (index < 19) {
                     var cellElement = '<p>' + cell.value+' </p>';
+                    console.log(cellElement)
+                    console.log(cell)
+                    console.log(cell.links)
                     cellElement.onclick = function(event) {
                       LookerCharts.Utils.openDrillMenu({
                         links: cell.links,
