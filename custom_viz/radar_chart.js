@@ -55,23 +55,19 @@
             //console.log(finalData)
             finalLabel.push("Other");
             //console.log(finalLabel)
+            data2=[28, 48, 40, 19, 96, 27, 100]
             var finalChartData = {
                 datasets: [{
-                    label: "First Dataset"
+                    label: 'First Dataset'
                     data: finalData,
                     borderColor: config.color || '#3498db',
                     backgroundColor: config.color || '#3498db',
                 },
                 {
                 label: 'My Second Dataset',
-                data: [28, 48, 40, 19, 96, 27, 100],
+                data: data2,
                 fill: true,
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgb(54, 162, 235)',
-                pointBackgroundColor: 'rgb(54, 162, 235)',
-                pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgb(54, 162, 235)'
+                backgroundColor: 'rgba(54, 162, 235, 0.2)'
               }],
                 labels: finalLabel
             };
