@@ -31,7 +31,7 @@
             var sum = 0;
 
             values.forEach(function (currentValue, index) {
-                if (index < 19) {
+                if (index < 5) {
                     var cell = currentValue[queryResponse.fields.measure_like[0].name];
                     finalData.push(cell.value);
                     finalLabel.push(currentValue[queryResponse.fields.dimensions[0].name].value);
@@ -42,15 +42,16 @@
 
             // Add the sum to the finalData array
             finalData.push(sum);
+            console.log(finalData)
             finalLabel.push("Other");
-
+            console.log(finalLabel)
             var finalChartData = {
                 datasets: [{
                     data: finalData,
                     borderColor: config.color || '#3498db',
                     backgroundColor: config.color || '#3498db',
                 }],
-                #//labels: finalLabel
+                labels: finalLabel
             };
 
             // Update the chart with the data
