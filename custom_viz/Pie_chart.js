@@ -38,7 +38,9 @@ looker.plugins.visualizations.add({
     },
 
     updateAsync: function (data, element, config, queryResponse, details, done) {
-
+        console.log(data);
+        this.chart.data = data
+        console.log("Data updated")
         done();
     }
 });
