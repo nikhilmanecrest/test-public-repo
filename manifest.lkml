@@ -57,3 +57,12 @@ visualization: {
     "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/helpers.min.js",
   ]
 }
+visualization: {
+  id: "Pie_chart_table"
+  label: "Pie_chart_table"
+  file: "custom_viz/Pie_chart_table.js"
+  dependencies: [
+    "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.js",
+  ]
+}
