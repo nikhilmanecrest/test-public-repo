@@ -30,6 +30,13 @@
                   }
               }
             });
+          canvas.addEventListener('click', function (event) {
+                var point = this.chart.getElementAtEvent(event)[0];
+                if (point) {
+                    var dataIndex = point._index;
+                    looker.plugins.drillMenu.trigger(dataIndex);
+                }
+            }.bind(this));
         },
         update: function (data, element, config, queryResponse) {
             // Extract the data from Looker response
