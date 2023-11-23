@@ -12,12 +12,20 @@
         headerCell1.innerHTML = 'Product Name';
         headerCell2.innerHTML = 'Count';
 
+        // Add borders to header cells
+        headerCell1.style.border = '1px solid #ccc';
+        headerCell2.style.border = '1px solid #ccc';
+
         // Create table row for selected data
         var row = table.insertRow(1);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
         cell1.innerHTML = selectedData[0][0];
         cell2.innerHTML = selectedData[0][1];
+
+        // Add borders to data cells
+        cell1.style.border = '1px solid #ccc';
+        cell2.style.border = '1px solid #ccc';
     }
 
     looker.plugins.visualizations.add({
@@ -51,6 +59,7 @@
             table.setAttribute('id', 'selectedDataTable');
             table.style.borderCollapse = 'collapse'; // Added to collapse the borders
             table.style.width = '100%'; // Added to make the table width 100%
+            table.style.border = '1px solid #ccc'; // Added border to the table
             container.appendChild(table);
 
             // Append the container to the main element
