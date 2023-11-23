@@ -39,6 +39,7 @@
             container.style.display = 'flex';
             container.style.alignItems = 'center';
             container.style.justifyContent = 'center';
+            container.style.flexDirection = 'column'; // Added to align chart and table vertically
 
             // Create a canvas element for the chart
             var canvas = document.createElement('canvas');
@@ -48,7 +49,8 @@
             // Create a table element for displaying selected data
             var table = document.createElement('table');
             table.setAttribute('id', 'selectedDataTable');
-            table.style.border = '1px solid #ccc'; // Border style
+            table.style.borderCollapse = 'collapse'; // Added to collapse the borders
+            table.style.width = '100%'; // Added to make the table width 100%
             container.appendChild(table);
 
             // Append the container to the main element
