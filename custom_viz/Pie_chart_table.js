@@ -9,15 +9,15 @@
         var headerRow = table.insertRow(0);
         var headerCell1 = headerRow.insertCell(0);
         var headerCell2 = headerRow.insertCell(1);
-        headerCell1.innerHTML = 'Label';
-        headerCell2.innerHTML = 'Value';
+        headerCell1.innerHTML = 'Product Name';
+        headerCell2.innerHTML = 'Count';
 
         // Create table row for selected data
         var row = table.insertRow(1);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
-        cell1.innerHTML = selectedData.rendered;
-        cell2.innerHTML = selectedData.value;
+        cell1.innerHTML = selectedData[0][0];
+        cell2.innerHTML = selectedData[0][1];
     }
 
     looker.plugins.visualizations.add({
@@ -64,10 +64,12 @@
                             var data = event.chart.config.data;
                             var label = data.labels;
                             var value = data.datasets[0].data;
-                            var selectedData = value[elements[0].index];
-
+                            data=[]
+                            var label_first_column=label[elements[0].index];
+                            var value_first_measure = value[elements[0].index].value;
+                            data.push([label_first_column,value_first_measure])
                             // Display selected data in the table
-                            updateTable(selectedData);
+                            updateTable(data);
                         }
                     }
                 }
