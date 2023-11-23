@@ -39,8 +39,10 @@ view: offices {
     sql: ${TABLE}.territory ;;
   }
   measure: count {
-    type: count
+    type: count_distinct
+    sql: "link" ;;
     link: {
+      label: "Look this event in chronicle"
       url: "https://www.google.com/"
     }
   }
