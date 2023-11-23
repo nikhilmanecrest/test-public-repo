@@ -1,39 +1,25 @@
 looker.plugins.visualizations.add({
-    create: function (element, config) {
-        console.log("Create function started..")
-        var chart = document.createElement('table');
-        chart.id = 'custom-table-chart';
-        element.appendChild(chart);
-        var style = document.createElement('style');
-        style.innerHTML = `table, th, td {
-          border: 1px solid black;
-          border-collapse: collapse;
-        }`
-        element.appendChild(style);
-        console.log("chart element added...")
-    },
-    updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
-        console.log("update function started..")
-        var chart = element.querySelector('#custom-table-chart');
-        chart.innerHTML = '';
-        var headerRow = document.createElement('tr');
-        for (var i of queryResponse.fields.dimensions) {
-            var th = document.createElement('th');
-            th.textContent = i.name;
-            headerRow.appendChild(th);
-        }
-        chart.appendChild(headerRow);
-        // Create table rows
-        data.forEach(function (row) {
-            var rows = document.createElement('tr');
-            Object.keys(row).forEach(function (key) {
-                var td = document.createElement('td');
-                td.textContent = row[key].value;
-                rows.appendChild(td);
-            });
-            chart.appendChild(rows);
-        });
-        element.appendChild(chart);
-        doneRendering()
-    }
+  create: function(element, config) {
+    // Create a container element for the visualization
+    element.innerHTML = '<div id="custom-table"></div>';
+
+    // Render the table using LookerCharts
+    this.chart = LookerCharts.Utils.createVis(element, config, {
+      type: 'table'
+    });
+  },
+
+  update: function(data, element, config, queryResponse) {
+    // Access the data for the first cell in the first row
+    var cellData = data[0][0].value;
+
+    // Use LookerCharts.Utils.htmlForCell() to customize the cell content
+    var customHTML = LookerCharts.Utils.htmlForCell(
+      '<b>Custom Content:</b> ' + cellData,
+      cellData
+    );
+
+    // Update the content of the cell in the table
+    document.getElementById('custom-table').innerHTML = customHTML;
+  }
 });
