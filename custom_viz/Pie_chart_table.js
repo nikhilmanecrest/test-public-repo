@@ -59,7 +59,7 @@
             container.style.display = 'flex';
             container.style.alignItems = 'center';
             container.style.justifyContent = 'center';
-            container.style.flexDirection = 'row'; // Added to align chart and table vertically
+            container.style.flexDirection = 'column'; // Added to align chart and table vertically
 
             // Create a canvas element for the chart
             var canvas = document.createElement('canvas');
