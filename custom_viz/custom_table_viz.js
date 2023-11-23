@@ -19,7 +19,12 @@ looker.plugins.visualizations.add({
         var headerRow = document.createElement('tr');
         for (var i of queryResponse.fields.dimensions) {
             var th = document.createElement('th');
-            th.textContent = i.name;
+            th.textContent = i.label;
+            headerRow.appendChild(th);
+        }
+        for (var i of queryResponse.fields.measures) {
+            var th = document.createElement('th');
+            th.textContent = i.label;
             headerRow.appendChild(th);
         }
         chart.appendChild(headerRow);
@@ -28,7 +33,7 @@ looker.plugins.visualizations.add({
             var rows = document.createElement('tr');
             Object.keys(row).forEach(function (key) {
                 var td = document.createElement('td');
-                td.textContent = row[key].value;
+                td.innerHTML = LookerCharts.Utils.htmlForCell(row[key]);
                 rows.appendChild(td);
             });
             chart.appendChild(rows);
