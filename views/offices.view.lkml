@@ -40,5 +40,8 @@ view: offices {
   }
   measure: count {
     type: count
+    link: {
+      url: "https://www.google.com/"
+    }
   }
 }
