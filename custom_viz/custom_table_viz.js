@@ -15,7 +15,6 @@ looker.plugins.visualizations.add({
     updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
         console.log("update function started..")
         var chart = element.querySelector('#custom-table-chart');
-        console.log("chart Object:", chart)
         chart.innerHTML = '';
         var headerRow = document.createElement('tr');
         for (var i of queryResponse.fields.dimensions) {

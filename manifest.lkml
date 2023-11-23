@@ -72,3 +72,8 @@ visualization: {
     "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/helpers.min.js",
   ]
 }
+visualization: {
+  id: "custom_table_viz"
+  label: "custom_table_viz"
+  file: "custom_viz/custom_table_viz.js"
+}
