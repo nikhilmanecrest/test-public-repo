@@ -34,15 +34,25 @@
             return true;
         },
         create: function (element, config) {
+            // Create a container div for centering
+            var container = document.createElement('div');
+            container.style.display = 'flex';
+            container.style.alignItems = 'center';
+            container.style.justifyContent = 'center';
+
             // Create a canvas element for the chart
             var canvas = document.createElement('canvas');
             canvas.setAttribute('id', 'customPieChartCanvas');
-            element.appendChild(canvas);
+            container.appendChild(canvas);
 
             // Create a table element for displaying selected data
             var table = document.createElement('table');
             table.setAttribute('id', 'selectedDataTable');
-            element.appendChild(table);
+            table.style.border = '1px solid #ccc'; // Border style
+            container.appendChild(table);
+
+            // Append the container to the main element
+            element.appendChild(container);
 
             // Initialize the Chart.js instance
             this.chart = new Chart(canvas, {
