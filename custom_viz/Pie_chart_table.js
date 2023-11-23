@@ -20,11 +20,11 @@
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
         cell1.innerHTML = selectedData[0][0];
-        cell2.innerHTML = selectedData[0][1];
+        cell2.innerHTML = LookerCharts.Utils.htmlForCell(selectedData[0][1]);
         }
         else {
         var len=0;
-        console.log(selectedData[0][0])
+        // console.log(selectedData[0][0])
         selectedData.forEach(()=>{
           // Create table row for selected data
         var row = table.insertRow(-1);
@@ -89,7 +89,7 @@
                             var value = data.datasets[0].data;
                             data=[]
                             var label_first_column=label[elements[0].index];
-                            var value_first_measure = value[elements[0].index].value;
+                            var value_first_measure = value[elements[0].index];
                             if (elements[0].index ==19){
                                     label[20].forEach((element)=>{
                                           data.push([element[0],element[1]])
