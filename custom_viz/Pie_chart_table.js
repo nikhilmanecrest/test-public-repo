@@ -1,5 +1,25 @@
 (function (looker, Chart) {
 
+    // Function to update the table with selected data
+    function updateTable(selectedData) {
+        var table = document.getElementById('selectedDataTable');
+        table.innerHTML = ''; // Clear previous data
+
+        // Create table header
+        var headerRow = table.insertRow(0);
+        var headerCell1 = headerRow.insertCell(0);
+        var headerCell2 = headerRow.insertCell(1);
+        headerCell1.innerHTML = 'Label';
+        headerCell2.innerHTML = 'Value';
+
+        // Create table row for selected data
+        var row = table.insertRow(1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        cell1.innerHTML = selectedData.rendered;
+        cell2.innerHTML = selectedData.value;
+    }
+
     looker.plugins.visualizations.add({
         id: 'custom_pie_chart_chartjs',
         label: 'Custom Pie Chart (Chart.js)',
@@ -31,7 +51,7 @@
                     onClick: function (event, elements) {
                         if (elements && elements.length > 0) {
                             // Trigger drill-down
-                            var data = event.chart.config._config.data;
+                            var data = event.chart.config.data;
                             var label = data.labels;
                             var value = data.datasets[0].data;
                             var selectedData = value[elements[0].index];
@@ -72,26 +92,6 @@
             // Update the chart with the data
             this.chart.data = finalCharData;
             this.chart.update();
-        }
-
-        // Function to update the table with selected data
-        function updateTable(selectedData) {
-            var table = document.getElementById('selectedDataTable');
-            table.innerHTML = ''; // Clear previous data
-
-            // Create table header
-            var headerRow = table.insertRow(0);
-            var headerCell1 = headerRow.insertCell(0);
-            var headerCell2 = headerRow.insertCell(1);
-            headerCell1.innerHTML = 'Label';
-            headerCell2.innerHTML = 'Value';
-
-            // Create table row for selected data
-            var row = table.insertRow(1);
-            var cell1 = row.insertCell(0);
-            var cell2 = row.insertCell(1);
-            cell1.innerHTML = selectedData.rendered;
-            cell2.innerHTML = selectedData.value;
         }
     });
 
