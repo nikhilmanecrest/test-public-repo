@@ -39,6 +39,9 @@ looker.plugins.visualizations.add({
             chart.appendChild(rows);
         });
         element.appendChild(chart);
+        // Add cross-filtering functionality
+        LookerCharts.Utils.toggleCrossfilter(element, config, queryResponse, data, function(event, details) {
+            // Handle cross-filtering event        });
         doneRendering()
     }
 });
