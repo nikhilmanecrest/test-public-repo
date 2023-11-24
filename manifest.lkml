@@ -77,3 +77,8 @@ visualization: {
   label: "custom_table_viz"
   file: "custom_viz/custom_table_viz.js"
 }
+visualization: {
+  id: "table_with_cross_filtering"
+  label: "table_with_cross_filtering"
+  file: "custom_viz/table_with_cross_filtering.js"
+}
