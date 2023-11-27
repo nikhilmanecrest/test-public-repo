@@ -87,5 +87,6 @@ visualization: {
   label: "astor_plot"
   file: "custom_viz/astor_plot.js"
   dependencies: ["https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js",
-    "https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.js"]
+    "https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.js",
+    "https://d3js.org/d3.v6.min.js"]
 }
