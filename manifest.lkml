@@ -88,5 +88,12 @@ visualization: {
   file: "custom_viz/astor_plot.js"
   dependencies: ["https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js",
     "https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.js",
-    "https://d3js.org/d3.v6.min.js"]
+    "https://d3js.org/d3.v6.min.js",
+    "https://code.jquery.com/jquery-2.2.4.min.js","https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js","https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js","https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.13.0/d3-legend.min.js"]
+}
+visualization: {
+  id: "Spider_chart"
+  url: "https://marketplace-api.looker.com/viz-dist/spider.js"
+  label: "Spider_chart"
+  dependencies: ["https://code.jquery.com/jquery-2.2.4.min.js","https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js","https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js","https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.13.0/d3-legend.min.js"]
 }
