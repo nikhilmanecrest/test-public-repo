@@ -82,3 +82,10 @@ visualization: {
   label: "table_with_cross_filtering"
   file: "custom_viz/table_with_cross_filtering.js"
 }
+visualization: {
+  id: "astor_plot"
+  label: "astor_plot"
+  file: "custom_viz/astor_plot.js"
+  dependencies: ["https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.js"]
+}
