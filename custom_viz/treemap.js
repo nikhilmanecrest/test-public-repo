@@ -4,8 +4,18 @@ looker.plugins.visualizations.add({
     var container = element.appendChild(document.createElement("div"));
     container.className = "my-treemap-container";
 
+    // Apply styles to the container
+    container.style.width = "100%";
+    container.style.height = "100%";
+    container.style.overflow = "scroll";
+
     // Initialize the visualization properties
     this.chart = d3.select(container).append("svg");
+
+    // Apply styles to the SVG
+    this.chart.style("width", "100%");
+    this.chart.style("height", "100%");
+    this.chart.style("overflow-x", "scroll");
   },
 
   updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
@@ -26,13 +36,14 @@ looker.plugins.visualizations.add({
     });
 
     // Set up the treemap layout
-    var width = element.offsetWidth;
-    var height = element.offsetHeight;
+    var parentElement = element.parentElement;
+    var width = parentElement.clientWidth; // Use clientWidth for the width
+    var height = parentElement.clientHeight; // Use clientHeight for the height
 
     // Create a color scale
     var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
-    var treemap = d3.treemap().size([width, height]).padding(1);
+    var treemap = d3.treemap().size([width, height]);
 
     // Create hierarchy based on dimensions and measures
     var root = d3.hierarchy({
