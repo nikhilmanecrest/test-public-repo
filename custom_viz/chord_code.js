@@ -53,7 +53,7 @@ looker.plugins.visualizations.add({
     var ribbon = d3.ribbon()
       .radius(innerRadius);
 
-    // Create a color scale with a vibrant color scheme
+    // Create a color scale
     var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
     // Create chord data
@@ -65,53 +65,18 @@ looker.plugins.visualizations.add({
       .append("g")
       .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-    // Draw chords with gradient fill for a wow effect
+    // Draw chords
     svg.append("g")
       .selectAll("path")
       .data(chordData)
       .enter().append("path")
       .attr("d", ribbon)
       .style("fill", function (d) {
-        return "url(#gradient" + d.source.index + ")";
+        return colorScale(d.source.index);
       })
-      .style("stroke", "white")
-      .style("stroke-width", "1px");
+      .style("stroke", "black");
 
-    // Define gradients for each chord
-    var gradients = svg.append("defs").selectAll("linearGradient")
-      .data(chordData)
-      .enter().append("linearGradient")
-      .attr("id", function (d) {
-        return "gradient" + d.source.index;
-      })
-      .attr("gradientUnits", "userSpaceOnUse")
-      .attr("x1", function (d) {
-        return Math.cos((d.source.endAngle - d.source.startAngle) / 2 + d.source.startAngle - Math.PI / 2);
-      })
-      .attr("y1", function (d) {
-        return Math.sin((d.source.endAngle - d.source.startAngle) / 2 + d.source.startAngle - Math.PI / 2);
-      })
-      .attr("x2", function (d) {
-        return Math.cos((d.target.endAngle - d.target.startAngle) / 2 + d.target.startAngle - Math.PI / 2);
-      })
-      .attr("y2", function (d) {
-        return Math.sin((d.target.endAngle - d.target.startAngle) / 2 + d.target.startAngle - Math.PI / 2);
-      });
-
-    // Set color stops for gradients
-    gradients.append("stop")
-      .attr("offset", "0%")
-      .attr("style", function (d) {
-        return "stop-color:" + colorScale(d.source.index);
-      });
-
-    gradients.append("stop")
-      .attr("offset", "100%")
-      .attr("style", function (d) {
-        return "stop-color:" + colorScale(d.target.index);
-      });
-
-    // Draw groups with vibrant fill
+    // Draw groups
     var group = svg.append("g")
       .selectAll("g")
       .data(chordData.groups)
@@ -121,8 +86,7 @@ looker.plugins.visualizations.add({
       .style("fill", function (d) {
         return colorScale(d.index);
       })
-      .style("stroke", "white")
-      .style("stroke-width", "1px")
+      .style("stroke", "black")
       .attr("d", arc);
 
     group.append("text")
@@ -140,8 +104,7 @@ looker.plugins.visualizations.add({
       })
       .text(function (d) {
         return dimensionNames[d.index];
-      })
-      .style("fill", "white");
+      });
 
     // Signal that the rendering is complete
     doneRendering();
