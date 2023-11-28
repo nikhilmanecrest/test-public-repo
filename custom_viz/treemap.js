@@ -16,6 +16,7 @@ looker.plugins.visualizations.add({
     this.chart.style("width", "100%");
     this.chart.style("height", "100%");
     this.chart.style("overflow-x", "scroll");
+    this.chart.style("overflow-y", "scroll");
   },
 
   updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
