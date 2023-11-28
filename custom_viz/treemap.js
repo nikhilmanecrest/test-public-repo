@@ -1,64 +1,85 @@
-// Assuming you have D3.js loaded in your project
-// This is a basic example; you'll need to adapt it to your data structure and requirements
+// Custom Treemap Visualization for Looker
 
-// Sample data
-var data = {
-  name: 'Root',
-  children: [
-    { name: 'Category 1', value: 20 },
-    { name: 'Category 2', value: 30 },
-    // Add more categories as needed
-  ],
-};
+looker.plugins.visualizations.add({
+  create: function (element, config) {
+    // Create a container element for the visualization
+    var container = element.appendChild(document.createElement("div"));
+    container.className = "my-treemap-container";
 
-// Set up the treemap layout
-var width = 500;
-var height = 300;
+    // Initialize the visualization properties
+    this.chart = d3.select(container).append("svg");
+  },
 
-var treemap = d3.treemap().size([width, height]).padding(1);
+  updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
+    // Clear any existing content
+    this.chart.selectAll("*").remove();
 
-// Create hierarchy based on data
-var root = d3.hierarchy(data).sum(function (d) {
-  return d.value;
+    // Extract data from Looker response
+    var dataset = [];
+    data.forEach(function (row) {
+      var rowData = {};
+      queryResponse.fields.dimension_like.forEach(function (field) {
+        rowData[field.name] = row[field.name].value;
+      });
+      queryResponse.fields.measure_like.forEach(function (field) {
+        rowData[field.name] = row[field.name].value;
+      });
+      dataset.push(rowData);
+    });
+
+    // Set up the treemap layout
+    var width = element.offsetWidth;
+    var height = element.offsetHeight;
+
+    var treemap = d3.treemap().size([width, height]).padding(1);
+
+    // Create hierarchy based on dimensions
+    var root = d3.hierarchy({ values: dataset }).sum(function (d) {
+      return d[queryResponse.fields.measure_like[0].name];
+    });
+
+    // Generate treemap nodes
+    treemap(root);
+
+    // Draw rectangles for each node
+    var nodes = this.chart
+      .selectAll(".node")
+      .data(root.leaves())
+      .enter()
+      .append("g")
+      .attr("class", "node")
+      .attr("transform", function (d) {
+        return "translate(" + d.x0 + "," + d.y0 + ")";
+      });
+
+    nodes
+      .append("rect")
+      .attr("width", function (d) {
+        return d.x1 - d.x0;
+      })
+      .attr("height", function (d) {
+        return d.y1 - d.y0;
+      })
+      .style("fill", "steelblue")
+      .style("stroke", "white");
+
+    // Add text labels
+    nodes
+      .append("text")
+      .attr("x", function (d) {
+        return (d.x1 - d.x0) / 2;
+      })
+      .attr("y", function (d) {
+        return (d.y1 - d.y0) / 2;
+      })
+      .attr("dy", "0.3em")
+      .style("text-anchor", "middle")
+      .style("fill", "white")
+      .text(function (d) {
+        return d.data[queryResponse.fields.dimension_like[0].name];
+      });
+
+    // Signal that the rendering is complete
+    doneRendering();
+  },
 });
-
-// Generate treemap nodes
-treemap(root);
-
-// Create SVG container
-var svg = d3.select('body').append('svg')
-  .attr('width', width)
-  .attr('height', height);
-
-// Draw rectangles for each node
-var nodes = svg.selectAll('.node')
-  .data(root.leaves())
-  .enter().append('g')
-  .attr('class', 'node')
-  .attr('transform', function (d) {
-    return 'translate(' + d.x0 + ',' + d.y0 + ')';
-  });
-
-nodes.append('rect')
-  .attr('width', function (d) {
-    return d.x1 - d.x0;
-  })
-  .attr('height', function (d) {
-    return d.y1 - d.y0;
-  })
-  .style('fill', 'steelblue');
-
-// Add text labels
-nodes.append('text')
-  .attr('x', function (d) {
-    return (d.x1 - d.x0) / 2;
-  })
-  .attr('y', function (d) {
-    return (d.y1 - d.y0) / 2;
-  })
-  .attr('dy', '0.3em')
-  .style('text-anchor', 'middle')
-  .style('fill', 'white')
-  .text(function (d) {
-    return d.data.name;
-  });
