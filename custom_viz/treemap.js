@@ -1,5 +1,3 @@
-// Custom Treemap Visualization for Looker
-
 looker.plugins.visualizations.add({
   create: function (element, config) {
     // Create a container element for the visualization
@@ -31,12 +29,20 @@ looker.plugins.visualizations.add({
     var width = element.offsetWidth;
     var height = element.offsetHeight;
 
+    // Create a color scale
+    var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+
     var treemap = d3.treemap().size([width, height]).padding(1);
 
-    // Create hierarchy based on dimensions
-    var root = d3.hierarchy({ values: dataset }).sum(function (d) {
-      return d[queryResponse.fields.measure_like[0].name];
-    });
+    // Create hierarchy based on dimensions and measures
+    var root = d3.hierarchy({
+      children: dataset.map(function (d) {
+        return { name: d[queryResponse.fields.dimension_like[0].name], value: d[queryResponse.fields.measure_like[0].name] };
+      }),
+    })
+      .sum(function (d) {
+        return d.value;
+      });
 
     // Generate treemap nodes
     treemap(root);
@@ -60,7 +66,9 @@ looker.plugins.visualizations.add({
       .attr("height", function (d) {
         return d.y1 - d.y0;
       })
-      .style("fill", "steelblue")
+      .style("fill", function (d, i) {
+        return colorScale(i); // Assign different colors based on the index
+      })
       .style("stroke", "white");
 
     // Add text labels
@@ -76,7 +84,7 @@ looker.plugins.visualizations.add({
       .style("text-anchor", "middle")
       .style("fill", "white")
       .text(function (d) {
-        return d.data[queryResponse.fields.dimension_like[0].name];
+        return d.data.name;
       });
 
     // Signal that the rendering is complete
