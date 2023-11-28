@@ -1,112 +1,192 @@
 looker.plugins.visualizations.add({
-  create: function (element, config) {
-    // Create a container element for the visualization
-    var container = element.appendChild(document.createElement("div"));
-    container.className = "my-chord-container";
-
-    // Initialize the visualization properties
-    this.chart = d3.select(container).append("svg");
-
-    // Apply styles to the container
-    container.style.width = "100%";
-    container.style.height = "100%";
-    container.style.overflow = "scroll";
-
-    // Apply styles to the SVG
-    this.chart.style("width", "100%");
-    this.chart.style("height", "100%");
-    this.chart.style("overflow-x", "scroll");
+  id: 'chord',
+  label: 'Chord',
+  options: {
+    color_range: {
+      type: 'array',
+      label: 'Color Range',
+      display: 'colors',
+      default: ['#dd3333', '#80ce5d', '#f78131', '#369dc1', '#c572d3', '#36c1b3', '#b57052', '#ed69af']
+    }
   },
+  // Set up the initial state of the visualization
+  create: function (element, config) {
+    element.innerHTML = `
+      <style>
+        .chordchart circle {
+          fill: none;
+          pointer-events: all;
+        }
 
-  updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
-    // Clear any existing content
-    this.chart.selectAll("*").remove();
+        .chordchart:hover path.chord-fade {
+          display: none;
+        }
 
-    // Extract data from Looker response
-    var matrix = [];
-    var dimensionNames = [];
+        .groups text {
+          font-size: 12px;
+        }
 
-    data.forEach(function (row) {
-      var rowData = [];
-      queryResponse.fields.dimension_like.forEach(function (field, i) {
-        rowData.push(row[field.name].value);
-        if (i === 0) dimensionNames.push(row[field.name].value);
-      });
-      matrix.push(rowData);
-    });
+        .chordchart, .chord-tip {
+          font-family: "Open Sans", "Helvetica", sans-serif;
+        }
 
-    // Set up the chord layout
-    var width = element.offsetWidth;
-    var height = element.offsetHeight;
-    var outerRadius = Math.min(width, height) * 0.5 - 40;
-    var innerRadius = outerRadius - 30;
+        .chord-tip {
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 10;
+        }
+      </style>
+    `;
 
-    var chord = d3.chord()
-      .padAngle(0.05)
+    this.tooltip = d3.select(element).append('div').attr('class', 'chord-tip');
+    this.svg = d3.select(element).append('svg');
+  },
+  // Render in response to the data or settings changing
+  update: function (data, element, config, queryResponse) {
+    if (!handleErrors(this, queryResponse, {
+      min_pivots: 0, max_pivots: 0,
+      min_dimensions: 2, max_dimensions: 2,
+      min_measures: 1, max_measures: 1
+    })) return;
+
+    const dimensions = queryResponse.fields.dimension_like;
+    const measure = queryResponse.fields.measure_like[0];
+
+    const width = element.clientWidth;
+    const height = element.clientHeight;
+    const thickness = 15;
+    const outerRadius = Math.min(width, height) * 0.5;
+    const innerRadius = outerRadius - thickness;
+
+    if (innerRadius < 0) return;
+
+    const valueFormatter = formatType(measure.value_format) || defaultFormatter;
+
+    const tooltip = this.tooltip;
+
+    const colorScale = d3.scaleOrdinal();
+    if (config.color_range == null || !(/^#/).test(config.color_range[0])) {
+      config.color_range = this.options.color_range.default;
+    }
+    const color = colorScale.range(config.color_range);
+
+    const chord = d3.chord()
+      .padAngle(0.025)
       .sortSubgroups(d3.descending)
       .sortChords(d3.descending);
 
-    var arc = d3.arc()
+    const ribbon = d3.ribbon()
+      .radius(innerRadius);
+
+    const arc = d3.arc()
       .innerRadius(innerRadius)
       .outerRadius(outerRadius);
 
-    var ribbon = d3.ribbon()
-      .radius(innerRadius);
+    const matrix = this.computeMatrix(data, dimensions.map(d => d.name), measure.name);
 
-    // Create a color scale
-    var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+    const svg = this.svg
+      .html('')
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .append('g')
+      .attr('class', 'chordchart')
+      .attr('transform', 'translate(' + width / 2 + ',' + (height / 2) + ')')
+      .datum(chord(matrix.matrix));
 
-    // Create chord data
-    var chordData = chord(matrix);
+    svg.append('circle')
+      .attr('r', outerRadius);
 
-    // Center the chart within its container
-    var svg = this.chart.attr("width", "100%")
-      .attr("height", "100%")
-      .append("g")
-      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-    // Draw chords
-    svg.append("g")
-      .selectAll("path")
-      .data(chordData)
-      .enter().append("path")
-      .attr("d", ribbon)
-      .style("fill", function (d) {
-        return colorScale(d.source.index);
+    const ribbons = svg.append('g')
+      .attr('class', 'ribbons')
+      .selectAll('path')
+      .data(chords => chords)
+      .enter().append('path')
+      .style('opacity', 0.8)
+      .attr('d', ribbon)
+      .style('fill', d => color(d.target.index))
+      .style('stroke', d => d3.rgb(color(d.index)).darker())
+      .on('mouseenter', d => {
+        tooltip.html(this.titleText(matrix.nameByIndex, d.source, d.target, valueFormatter));
       })
-      .style("stroke", "black");
+      .on('mouseleave', d => tooltip.html(''));
 
-    // Draw groups
-    var group = svg.append("g")
-      .selectAll("g")
-      .data(chordData.groups)
-      .enter().append("g");
-
-    group.append("path")
-      .style("fill", function (d) {
-        return colorScale(d.index);
-      })
-      .style("stroke", "black")
-      .attr("d", arc);
-
-    group.append("text")
-      .each(function (d) {
-        d.angle = (d.startAngle + d.endAngle) / 2;
-      })
-      .attr("dy", ".35em")
-      .attr("transform", function (d) {
-        return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")" +
-          "translate(" + (innerRadius + 26) + ")" +
-          (d.angle > Math.PI ? "rotate(180)" : "");
-      })
-      .style("text-anchor", function (d) {
-        return d.angle > Math.PI ? "end" : null;
-      })
-      .text(function (d) {
-        return dimensionNames[d.index];
+    const group = svg.append('g')
+      .attr('class', 'groups')
+      .selectAll('g')
+      .data(chords => chords.groups)
+      .enter().append('g')
+      .on('mouseover', (d, i) => {
+        ribbons.classed('chord-fade', p => p.source.index !== i && p.target.index !== i);
       });
 
-    // Signal that the rendering is complete
-    doneRendering();
+    const groupPath = group.append('path')
+      .style('opacity', 0.8)
+      .style('fill', d => color(d.index))
+      .style('stroke', d => d3.rgb(color(d.index)).darker())
+      .attr('id', (d, i) => `group${i}`)
+      .attr('d', arc);
+
+    const groupPathNodes = groupPath.nodes();
+
+    const groupText = group.append('text').attr('dy', 11);
+
+    groupText.append('textPath')
+      .attr('xlink:href', (d, i) => `#group${i}`)
+      .attr('startOffset', (d, i) => (groupPathNodes[i].getTotalLength() - (thickness * 2)) / 4)
+      .style('text-anchor', 'middle')
+      .text(d => matrix.nameByIndex.get(d.index.toString()));
+
+    groupText
+      .filter(function (d, i) {
+        return groupPathNodes[i].getTotalLength() / 2 - 16 < this.getComputedTextLength();
+      })
+      .remove();
   },
+  computeMatrix: function (data, dimensions, measure) {
+    const indexByName = d3.map();
+    const nameByIndex = d3.map();
+    const matrix = [];
+    let n = 0;
+
+    dimensions.forEach(dimension => {
+      data.forEach(d => {
+        const value = d[dimension].value;
+        if (!indexByName.has(value)) {
+          nameByIndex.set(n.toString(), value);
+          indexByName.set(value, n++);
+        }
+      });
+    });
+
+    for (let i = -1; ++i < n;) {
+      matrix[i] = [];
+      for (let t = -1; ++t < n;) {
+        matrix[i][t] = 0;
+      }
+    }
+
+    data.forEach(d => {
+      const row = indexByName.get(d[dimensions[1]].value);
+      const col = indexByName.get(d[dimensions[0]].value);
+      const val = d[measure].value;
+      matrix[row][col] = val;
+    });
+
+    return {
+      matrix,
+      indexByName,
+      nameByIndex
+    };
+  },
+  titleText: function (lookup, source, target, formatter) {
+    const sourceName = lookup.get(source.index);
+    const sourceValue = formatter(source.value);
+    const targetName = lookup.get(target.index);
+    const targetValue = formatter(target.value);
+    return `
+      <p>${sourceName} → ${targetName}: ${sourceValue}</p>
+      <p>${targetName} → ${sourceName}: ${targetValue}</p>
+    `;
+  }
 });
