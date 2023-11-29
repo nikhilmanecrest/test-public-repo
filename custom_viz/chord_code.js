@@ -44,6 +44,13 @@ looker.plugins.visualizations.add({
     this.svg = d3.select(element).append('svg');
   },
 
+  // Define the formatType function
+  formatType: function (value) {
+    // Implement your formatting logic here
+    // This is a placeholder, replace it with your actual logic
+    return value;
+  },
+
   computeMatrix: function (data, dimensions, measure) {
     const indexByName = d3.map();
     const nameByIndex = d3.map();
@@ -126,6 +133,97 @@ looker.plugins.visualizations.add({
       min_measures: 1, max_measures: 1
     })) return;
 
-    // Rest of the update function remains unchanged
+    const dimensions = queryResponse.fields.dimension_like;
+    const measure = queryResponse.fields.measure_like[0];
+
+    const width = element.clientWidth;
+    const height = element.clientHeight;
+    const thickness = 15;
+    const outerRadius = Math.min(width, height) * 0.5;
+    const innerRadius = outerRadius - thickness;
+
+    if (innerRadius < 0) return;
+
+    const valueFormatter = this.formatType(measure.value_format) || this.defaultFormatter;
+
+    const tooltip = this.tooltip;
+
+    const colorScale = d3.scaleOrdinal();
+    if (config.color_range == null || !(/^#/).test(config.color_range[0])) {
+      config.color_range = this.options.color_range.default;
+    }
+    const color = colorScale.range(config.color_range);
+
+    const chord = d3.chord()
+      .padAngle(0.025)
+      .sortSubgroups(d3.descending)
+      .sortChords(d3.descending);
+
+    const ribbon = d3.ribbon()
+      .radius(innerRadius);
+
+    const arc = d3.arc()
+      .innerRadius(innerRadius)
+      .outerRadius(outerRadius);
+
+    const matrix = this.computeMatrix(data, dimensions.map(d => d.name), measure.name);
+
+    const svg = this.svg
+      .html('')
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .append('g')
+      .attr('class', 'chordchart')
+      .attr('transform', 'translate(' + width / 2 + ',' + (height / 2) + ')')
+      .datum(chord(matrix.matrix));
+
+    svg.append('circle')
+      .attr('r', outerRadius);
+
+    const ribbons = svg.append('g')
+      .attr('class', 'ribbons')
+      .selectAll('path')
+      .data(chords => chords)
+      .enter().append('path')
+      .style('opacity', 0.8)
+      .attr('d', ribbon)
+      .style('fill', d => color(d.target.index))
+      .style('stroke', d => d3.rgb(color(d.index)).darker())
+      .on('mouseenter', d => {
+        tooltip.html(this.titleText(matrix.nameByIndex, d.source, d.target, valueFormatter));
+      })
+      .on('mouseleave', d => tooltip.html(''));
+
+    const group = svg.append('g')
+      .attr('class', 'groups')
+      .selectAll('g')
+      .data(chords => chords.groups)
+      .enter().append('g')
+      .on('mouseover', (d, i) => {
+        ribbons.classed('chord-fade', p => p.source.index !== i && p.target.index !== i);
+      });
+
+    const groupPath = group.append('path')
+      .style('opacity', 0.8)
+      .style('fill', d => color(d.index))
+      .style('stroke', d => d3.rgb(color(d.index)).darker())
+      .attr('id', (d, i) => `group${i}`)
+      .attr('d', arc);
+
+    const groupPathNodes = groupPath.nodes();
+
+    const groupText = group.append('text').attr('dy', 11);
+
+    groupText.append('textPath')
+      .attr('xlink:href', (d, i) => `#group${i}`)
+      .attr('startOffset', (d, i) => (groupPathNodes[i].getTotalLength() - (thickness * 2)) / 4)
+      .style('text-anchor', 'middle')
+      .text(d => matrix.nameByIndex.get(d.index.toString()));
+
+    groupText
+      .filter(function (d, i) {
+        return groupPathNodes[i].getTotalLength() / 2 - 16 < this.getComputedTextLength();
+      })
+      .remove();
   }
 });
