@@ -43,5 +43,5 @@ looker.plugins.visualizations.add({
     };
     createLiquidFillGauge(container, value, liquidFillConfig);
     doneRendering();
-  },
+  }
 });
