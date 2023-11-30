@@ -20,7 +20,7 @@ looker.plugins.visualizations.add({
 
     // Initialize the treemap visualization properties
     this.chart = d3.select(treemap).append("svg");
-    console.log("this",this,"chart",chart)
+    console.log("this",this,"chart",this.chart);
     this.chart.style.width = "100%";
     this.chart.style.height = "100%";
 
