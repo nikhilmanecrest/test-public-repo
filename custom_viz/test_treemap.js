@@ -4,36 +4,42 @@ looker.plugins.visualizations.add({
     var container = element.appendChild(document.createElement("div"));
     container.id = "my-visualization-container";
     // Apply styles to the container
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+    container.style.justifyContent = 'center';
+    container.style.flexDirection = 'column'; // Added to align chart and table vertically
     container.style.width = "100%";
     container.style.height = "100%";
     container.style.overflow = "scroll";
-    var treemap = element.appendChild(document.createElement("div"));
+
+    // Create treemap and set its width
+    var treemap = container.appendChild(document.createElement("div"));
     treemap.id = "my-visualization-treemap";
+    treemap.style.width = "50%"; // Adjust width as needed
+    treemap.style.height = "100%";
+    treemap.style.overflowX = "scroll";
+    treemap.style.overflowY = "scroll";
+
     // Initialize the treemap visualization properties
     this.chart = d3.select(treemap).append("svg");
 
-    // Apply styles to the SVG
-    this.chart.style("width", "50%"); // Adjust width as needed
-    this.chart.style("height", "100%");
-    this.chart.style("overflow-x", "scroll");
-    this.chart.style("overflow-y", "scroll");
-    container.append(treemap);
-    // Initialize the table visualization properties
-   var table = document.createElement('table');
-    table.id="my-visualization-table"
+    // Create a table and set its width
+    var table = container.appendChild(document.createElement('table'));
+    table.id = "my-visualization-table";
     table.setAttribute('class', 'table');
     // Applying styling to the table
     table.style.width = '50%'; // Adjust width as needed
     table.style.borderCollapse = 'collapse';
     table.style.marginTop = '20px';
-    // Append the table to the container
-    container.append(table);
+
+    // Signal that the rendering is complete
+    doneRendering();
   },
 
   updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
     // Clear any existing content
     this.chart.selectAll("*").remove();
-      // create a tooltip
+    // create a tooltip
     // Extract data from Looker response
     var dataset = [];
     data.forEach(function (row) {
@@ -55,7 +61,7 @@ looker.plugins.visualizations.add({
     // Create a color scale
     var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
-    var treemap = d3.treemap().size([width, height]);
+    var treemap = d3.treemap().size([width * 0.5, height]); // Adjust width as needed
 
     // Create hierarchy based on dimensions and measures
     var root = d3.hierarchy({
@@ -91,7 +97,7 @@ looker.plugins.visualizations.add({
       .on("click", function (d) {
         var table = document.querySelectorAll("#my-visualization-table")[0];
         table.innerHTML =  `<tr><td>Name</td></tr>`;
-        });
+      });
 
     nodes
       .append("rect")
@@ -119,7 +125,6 @@ looker.plugins.visualizations.add({
       .style("text-anchor", "middle")
       .style("fill", "white")
       .text(function (d) {
-        // console.log(d)
         return d.data.name;
       });
 
