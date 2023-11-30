@@ -5,9 +5,7 @@ looker.plugins.visualizations.add({
     container.id = "my-visualization-container";
     // Apply styles to the container
     container.style.display = 'flex';
-    container.style.alignItems = 'center';
-    container.style.justifyContent = 'center';
-    container.style.flexDirection = 'column'; // Added to align chart and table vertically
+    container.style.flexDirection = 'row'; // Added to align chart and table vertically
     container.style.width = "100%";
     container.style.height = "100%";
     container.style.overflow = "scroll";
