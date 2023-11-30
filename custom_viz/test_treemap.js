@@ -104,6 +104,9 @@ looker.plugins.visualizations.add({
             if(header_index < len){
                 var headerCell1 = headerRow.insertCell(header_index);
                 headerCell1.innerHTML = header;
+                headerCell1.style.textAlign = 'center';
+                headerCell1.style.width = '50px';
+                headerCell1.style.height = '50px';
                 headerCell1.style.border = '1px solid #ccc';
                 header_index=header_index+1;
             }
@@ -117,7 +120,13 @@ looker.plugins.visualizations.add({
         cell1.innerHTML = data_treemap["name"];
         cell2.innerHTML = data_treemap["value"];
         cell1.style.border = '1px solid #ccc';
+        cell1.style.textAlign = 'center';
+        cell1.style.width = '50px';
+        cell1.style.height = '50px';
         cell2.style.border = '1px solid #ccc';
+        cell2.style.textAlign = 'center';
+        cell2.style.width = '50px';
+        cell2.style.height = '50px';
       });
 
     nodes
