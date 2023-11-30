@@ -22,16 +22,17 @@ looker.plugins.visualizations.add({
     this.chart.style("overflow-y", "scroll");
 
     // Initialize the table visualization properties
-    this.table = document.createElement('table');
-    this.table.setAttribute('class', 'table');
+   var table = document.createElement('table');
+    table.className="table_chart"
+    table.setAttribute('class', 'table');
 
     // Applying styling to the table
-    this.table.style.width = '50%'; // Adjust width as needed
-    this.table.style.borderCollapse = 'collapse';
-    this.table.style.marginTop = '20px';
+    table.style.width = '50%'; // Adjust width as needed
+    table.style.borderCollapse = 'collapse';
+    table.style.marginTop = '20px';
 
     // Append the table to the container
-    container.append(this.table);
+    container.append(table);
   },
 
   updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
@@ -95,41 +96,9 @@ looker.plugins.visualizations.add({
         d3.select(this).style("opacity", 1);
       })
       .on("click", function (d) {
-        // Restore the original opacity on mouseout
-        // d3.select(this).style("opacity", 1);
-        // d3.select(this).style("visibility","hidden");
-        var headerRow = this.table.insertRow(0);
-      headerRow.insertCell(0).textContent = queryResponse.fields.dimension_like[0].name;
-      headerRow.insertCell(1).textContent = queryResponse.fields.dimension_like[1].name;
-
-      // Clear existing rows
-      while (this.table.rows.length > 1) {
-        this.table.deleteRow(1);
-      }
-      // Extract data from Looker's query response
-      var col1 = queryResponse.fields.dimension_like[0].name;
-      var col2 = queryResponse.fields.dimension_like[1].name;
-
-      // Populate the table with data
-      for (var i = 0; i < data.length; ++i) {
-          var row = this.table.insertRow(i + 1);
-          var cell1 = row.insertCell(0);
-          var cell2 = row.insertCell(1);
-          var cell3 = row.insertCell(2);
-
-          // Use the correct field names based on your LookML model
-          cell1.textContent = data[i][col1].value;
-          cell2.textContent = data[i][col2].value;
-          // Customize cell content or styling as needed
-          // Add a link or button for each row
-          var dashboardUrl = 'https://your-dashboard-url'; // Replace with your actual dashboard URL
-          var link = document.createElement('a');
-          link.textContent = 'View Dashboard';
-          link.href = dashboardUrl;
-          link.target = '_self'; // Open in a new tab/window
-          cell3.appendChild(link);
-      }
-      });
+        var table = document.querySelectorAll(".my-visualization-container")[0].children[1];
+        table.innerHTML =  `<tr><td>Name</td></tr>`;
+        });
 
     nodes
       .append("rect")
