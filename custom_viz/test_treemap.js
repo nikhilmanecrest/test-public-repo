@@ -1,46 +1,39 @@
 looker.plugins.visualizations.add({
   create: function (element, config) {
-    console.log("Creating");
     // Create a container element for the visualization
-    // Create a container element for both the treemap and the table
     var container = element.appendChild(document.createElement("div"));
-    container.className = "my-visualization-container";
-    console.log(container);
-
+    container.id = "my-visualization-container";
     // Apply styles to the container
     container.style.width = "100%";
     container.style.height = "100%";
     container.style.overflow = "scroll";
-
+    var treemap = element.appendChild(document.createElement("div"));
+    container.id = "my-visualization-treemap";
     // Initialize the treemap visualization properties
-    this.chart = d3.select(container).append("svg");
+    this.chart = d3.select(treemap).append("svg");
 
     // Apply styles to the SVG
     this.chart.style("width", "50%"); // Adjust width as needed
     this.chart.style("height", "100%");
     this.chart.style("overflow-x", "scroll");
     this.chart.style("overflow-y", "scroll");
-
+    container.append(treemap);
     // Initialize the table visualization properties
    var table = document.createElement('table');
-    table.className="table_chart"
+    table.id="my-visualization-table"
     table.setAttribute('class', 'table');
-
     // Applying styling to the table
     table.style.width = '50%'; // Adjust width as needed
     table.style.borderCollapse = 'collapse';
     table.style.marginTop = '20px';
-
     // Append the table to the container
     container.append(table);
   },
 
   updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
-    console.log("Updating...");
     // Clear any existing content
     this.chart.selectAll("*").remove();
       // create a tooltip
-      // this.tooltip2.style("visibility", "hidden");
     // Extract data from Looker response
     var dataset = [];
     data.forEach(function (row) {
@@ -96,6 +89,7 @@ looker.plugins.visualizations.add({
         d3.select(this).style("opacity", 1);
       })
       .on("click", function (d) {
+        console.log(document.querySelectorAll("#my-visualization-container"));
         var table = document.querySelectorAll(".my-visualization-container")[0].children[1];
         table.innerHTML =  `<tr><td>Name</td></tr>`;
         });
