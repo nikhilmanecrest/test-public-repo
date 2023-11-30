@@ -89,8 +89,7 @@ looker.plugins.visualizations.add({
         d3.select(this).style("opacity", 1);
       })
       .on("click", function (d) {
-        console.log(document.querySelectorAll("#my-visualization-container"));
-        var table = document.querySelectorAll(".my-visualization-container")[0].children[1];
+        var table = document.querySelectorAll("#my-visualization-table")[0];
         table.innerHTML =  `<tr><td>Name</td></tr>`;
         });
 
