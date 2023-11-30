@@ -13,13 +13,15 @@ looker.plugins.visualizations.add({
     // Create treemap and set its width
     var treemap = container.appendChild(document.createElement("div"));
     treemap.id = "my-visualization-treemap";
-    treemap.style.width = "100%"; // Adjust width as needed
+    treemap.style.width = "50%"; // Adjust width as needed
     treemap.style.height = "100%";
     // treemap.style.overflowX = "scroll";
     // treemap.style.overflowY = "scroll";
 
     // Initialize the treemap visualization properties
     this.chart = d3.select(treemap).append("svg");
+    this.chart.style.width = "100%";
+    this.chart.style.height = "100%";
 
     // Create a table and set its width
     var table = container.appendChild(document.createElement('table'));
