@@ -19,10 +19,8 @@ looker.plugins.visualizations.add({
     // treemap.style.overflowY = "scroll";
 
     // Initialize the treemap visualization properties
-    this.chart = d3.select(treemap).append("svg");
+    this.chart = d3.select(treemap).append("svg").attr("width", "100%").attr("height", "100%");
     console.log("this",this,"chart",this.chart);
-    this.chart.style.width = "100%";
-    this.chart.style.height = "100%";
 
     // Create a table and set its width
     var table = container.appendChild(document.createElement('table'));
