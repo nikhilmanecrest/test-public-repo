@@ -25,4 +25,3 @@ explore: payments {}
 explore: productlines {}
 
 explore: products {}
-
