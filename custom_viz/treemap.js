@@ -68,6 +68,14 @@ looker.plugins.visualizations.add({
       .attr("class", "node")
       .attr("transform", function (d) {
         return "translate(" + d.x0 + "," + d.y0 + ")";
+      })
+      .on("mouseover", function (d) {
+        // Add your custom hover behavior here
+        d3.select(this).style("opacity", 0.7);
+      })
+      .on("mouseout", function () {
+        // Restore the original opacity on mouseout
+        d3.select(this).style("opacity", 1);
       });
 
     nodes
