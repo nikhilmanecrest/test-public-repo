@@ -6,7 +6,7 @@ looker.plugins.visualizations.add({
     var container = element.appendChild(document.createElement("div"));
     container.className = "my-visualization-container";
     console.log(container);
-    
+
     // Apply styles to the container
     container.style.width = "100%";
     container.style.height = "100%";

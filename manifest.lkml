@@ -117,3 +117,12 @@ visualization: {
   dependencies: ["https://code.jquery.com/jquery-2.2.4.min.js","https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js","https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js","https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.13.0/d3-legend.min.js"
    ,"https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js","https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.js" ]
 }
+
+
+visualization: {
+  id: "test_treemap_code"
+  label: "test_treemap_code"
+  file: "custom_viz/test_treemap.js"
+  dependencies: ["https://code.jquery.com/jquery-2.2.4.min.js","https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js","https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js","https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.13.0/d3-legend.min.js"
+    ,"https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js","https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.js" ]
+}
