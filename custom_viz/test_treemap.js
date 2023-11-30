@@ -8,7 +8,7 @@ looker.plugins.visualizations.add({
     container.style.height = "100%";
     container.style.overflow = "scroll";
     var treemap = element.appendChild(document.createElement("div"));
-    container.id = "my-visualization-treemap";
+    treemap.id = "my-visualization-treemap";
     // Initialize the treemap visualization properties
     this.chart = d3.select(treemap).append("svg");
 
