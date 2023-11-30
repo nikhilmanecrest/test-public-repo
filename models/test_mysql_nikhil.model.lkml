@@ -2,6 +2,7 @@ connection: "mysql"
 
 # include all the views
 include: "/views/**/*.view.lkml"
+include: "/dashboard/**/*.dashboard"
 
 datagroup: test_mysql_nikhil_default_datagroup {
   # sql_trigger: SELECT MAX(id) FROM etl_log;;
