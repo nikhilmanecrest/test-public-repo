@@ -20,6 +20,7 @@ looker.plugins.visualizations.add({
 
     // Initialize the treemap visualization properties
     this.chart = d3.select(treemap).append("svg");
+    console.log("this",this,"chart",chart)
     this.chart.style.width = "100%";
     this.chart.style.height = "100%";
 
@@ -32,8 +33,6 @@ looker.plugins.visualizations.add({
     table.style.borderCollapse = 'collapse';
     table.style.marginTop = '20px';
 
-    // Signal that the rendering is complete
-    doneRendering();
   },
 
   updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
