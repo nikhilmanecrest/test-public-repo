@@ -52,7 +52,6 @@ looker.plugins.visualizations.add({
       });
       dataset.push(rowData);
     });
-    console.log(column)
     // Set up the treemap layout
     var parentElement = element.parentElement;
     var width = parentElement.clientWidth; // Use clientWidth for the width
@@ -96,28 +95,29 @@ looker.plugins.visualizations.add({
       })
       .on("click", function (d) {
         var table = document.querySelectorAll("#my-visualization-table")[0];
+        table.innerHTML = '';
         // Create table header
         var headerRow = table.insertRow(0);
         var len=column.size;
         var header_index=0;
-        console.log(headerRow)
-        console.log(len);
         column.forEach((header)=>{
             if(header_index < len){
                 var headerCell1 = headerRow.insertCell(header_index);
                 headerCell1.innerHTML = header;
-                headerCell1.style.border = '2px solid #ccc';
+                headerCell1.style.border = '1px solid #ccc';
                 header_index=header_index+1;
             }
         });
         var len1=(d.srcElement.__data__.data).length;
         var data_treemap=d.srcElement.__data__.data;
-        console.log();
+        console.log(d.srcElement.__data__.data);
         var row = table.insertRow(-1);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
-        cell1.innerHTML = data_treemap[0];
-        cell2.innerHTML = data_treemap[1];
+        cell1.innerHTML = data_treemap["name"];
+        cell2.innerHTML = data_treemap["value"];
+        cell1.style.border = '1px solid #ccc';
+        cell2.style.border = '1px solid #ccc';
       });
 
     nodes
