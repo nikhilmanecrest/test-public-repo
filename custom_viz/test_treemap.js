@@ -15,12 +15,14 @@ looker.plugins.visualizations.add({
     treemap.id = "my-visualization-treemap";
     treemap.style.width = "50%"; // Adjust width as needed
     treemap.style.height = "100%";
-    // treemap.style.overflowX = "scroll";
-    // treemap.style.overflowY = "scroll";
+
+    // create tooltip
+    var tooltip=container.appendChild(document.createElement("div"));
+    tooltip.id = "my-visualization-tooltip";
 
     // Initialize the treemap visualization properties
     this.chart = d3.select(treemap).append("svg").attr("width", "100%").attr("height", "100%");
-    console.log("this",this,"chart",this.chart);
+    // console.log("this",this,"chart",this.chart);
 
     // Create a table and set its width
     var table = container.appendChild(document.createElement('table'));
@@ -30,6 +32,7 @@ looker.plugins.visualizations.add({
     table.style.width = '50%'; // Adjust width as needed
     table.style.borderCollapse = 'collapse';
     table.style.marginTop = '20px';
+
 
   },
 
