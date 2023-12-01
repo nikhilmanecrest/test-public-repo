@@ -91,10 +91,24 @@ looker.plugins.visualizations.add({
       .on("mouseover", function (d) {
         // Add your custom hover behavior here
         d3.select(this).style("opacity", 0.7);
+        var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
+        tooltip.innerHTML = "Value: ";
+        tooltip.style.display = "block";
+        tooltip.style.position = "absolute";
+        console.log(d)
+        tooltip.style.left = d.pageX + "px";
+        tooltip.style.top = d.pageY + "px";
+        tooltip.style.background = "rgba(0, 0, 0, 0.8)";
+        tooltip.style.color = "white";
+        tooltip.style.padding = "10px";
+        tooltip.style.borderRadius = "5px";
+        tooltip.style.transition = "opacity 0.3s ease-in-out";
       })
       .on("mouseout", function () {
         // Restore the original opacity on mouseout
         d3.select(this).style("opacity", 1);
+        var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
+        tooltip.style.display = "none";
       })
       .on("click", function (d) {
         var table = document.querySelectorAll("#my-visualization-table")[0];
