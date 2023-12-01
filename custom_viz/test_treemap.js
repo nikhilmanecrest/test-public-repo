@@ -22,7 +22,6 @@ looker.plugins.visualizations.add({
 
     // Initialize the treemap visualization properties
     this.chart = d3.select(treemap).append("svg").attr("width", "100%").attr("height", "100%");
-    // console.log("this",this,"chart",this.chart);
 
     // Create a table and set its width
     var table = container.appendChild(document.createElement('table'));
@@ -32,17 +31,14 @@ looker.plugins.visualizations.add({
     table.style.width = '50%'; // Adjust width as needed
     table.style.borderCollapse = 'collapse';
     table.style.marginTop = '20px';
-
-
   },
 
   updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
     // Clear any existing content
     this.chart.selectAll("*").remove();
-    // create a tooltip
     // Extract data from Looker response
     var dataset = [];
-    var column = new Set();
+    const column = new Set();
     data.forEach(function (row) {
       var rowData = {};
       queryResponse.fields.dimension_like.forEach(function (field) {
@@ -77,7 +73,6 @@ looker.plugins.visualizations.add({
 
     // Generate treemap nodes
     treemap(root);
-
     // Draw rectangles for each node
     var nodes = this.chart
       .selectAll(".node")
@@ -90,12 +85,17 @@ looker.plugins.visualizations.add({
       })
       .on("mouseover", function (d) {
         // Add your custom hover behavior here
+        var data_tooltip=d.srcElement.__data__.data;
         d3.select(this).style("opacity", 0.7);
         var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
-        tooltip.innerHTML = "Value: ";
+        var column_string=[]
+        column.forEach((header)=>{
+                column_string.push(header)
+            });
+        tooltip.innerHTML = `${column_string[0]}: ${data_tooltip['name']} \n
+                     ${column_string[1]}: ${data_tooltip['value']}`;
         tooltip.style.display = "block";
         tooltip.style.position = "absolute";
-        console.log(d)
         tooltip.style.left = d.pageX + "px";
         tooltip.style.top = d.pageY + "px";
         tooltip.style.background = "rgba(0, 0, 0, 0.8)";
