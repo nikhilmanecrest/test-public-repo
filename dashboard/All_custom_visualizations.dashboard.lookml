@@ -78,3 +78,21 @@
     col: 16
     width: 8
     height: 6
+  - title: Radar Viz using chartjs
+    name: Radar Viz using chartjs
+    model: test_mysql_nikhil
+    explore: customers
+    type: test_mysql_nikhil::radar_chart
+    fields: [customers.state, customers.count]
+    sorts: [customers.count desc 0]
+    limit: 500
+    column_limit: 50
+    hidden_fields: []
+    hidden_points_if_no: []
+    series_labels: {}
+    show_view_names: true
+    defaults_version: 0
+    row: 17
+    col: 0
+    width: 8
+    height: 6
