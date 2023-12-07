@@ -153,18 +153,25 @@ looker.plugins.visualizations.add({
     // Extract data from Looker response
     var dataset = [];
     const column = new Set();
+    var links=[]
     data.forEach(function (row) {
+    // console.log(row)
       var rowData = {};
       queryResponse.fields.dimension_like.forEach(function (field) {
         column.add(field.label)
         rowData[field.name] = row[field.name].value;
       });
+
       queryResponse.fields.measure_like.forEach(function (field) {
+        // console.log("qwdiuw")
+        // console.log(row[field.name].links[1])
+        links.push({"label":field.label,"value":row[field.name].value,"link":(row[field.name].links[1])})
         column.add(field.label)
         rowData[field.name] = row[field.name].value;
       });
       dataset.push(rowData);
     });
+    // console.log(links)
     // Set up the treemap layout
     var parentElement = element.parentElement;
     var width = parentElement.clientWidth; // Use clientWidth for the width
@@ -201,22 +208,22 @@ looker.plugins.visualizations.add({
         // Add your custom hover behavior here
         var data_tooltip=d.srcElement.__data__.data;
         d3.select(this).style("opacity", 0.7);
-        var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
-        var column_string=[]
-        column.forEach((header)=>{
-                column_string.push(header)
-            });
-        tooltip.innerHTML = `${column_string[0]}: ${data_tooltip['name']} \n
-                     ${column_string[1]}: ${data_tooltip['value']}`;
-        tooltip.style.display = "block";
-        tooltip.style.position = "absolute";
-        tooltip.style.left = d.pageX + "px";
-        tooltip.style.top = d.pageY + "px";
-        tooltip.style.background = "rgba(0, 0, 0, 0.8)";
-        tooltip.style.color = "white";
-        tooltip.style.padding = "10px";
-        tooltip.style.borderRadius = "5px";
-        tooltip.style.transition = "opacity 0.3s ease-in-out";
+        // var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
+        // var column_string=[]
+        // column.forEach((header)=>{
+        //         column_string.push(header)
+        //     });
+        // tooltip.innerHTML = `${column_string[0]}: ${data_tooltip['name']} \n
+        //              ${column_string[1]}: ${data_tooltip['value']}`;
+        // tooltip.style.display = "block";
+        // tooltip.style.position = "absolute";
+        // tooltip.style.left = d.pageX + "px";
+        // tooltip.style.top = d.pageY + "px";
+        // tooltip.style.background = "rgba(0, 0, 0, 0.8)";
+        // tooltip.style.color = "white";
+        // tooltip.style.padding = "10px";
+        // tooltip.style.borderRadius = "5px";
+        // tooltip.style.transition = "opacity 0.3s ease-in-out";
       })
       .on("mouseout", function () {
         // Restore the original opacity on mouseout
@@ -225,39 +232,19 @@ looker.plugins.visualizations.add({
         tooltip.style.display = "none";
       })
       .on("click", function (d) {
-        var table = document.querySelectorAll("#my-visualization-table")[0];
-        table.innerHTML = '';
-        // Create table header
-        var headerRow = table.insertRow(0);
-        var len=column.size;
-        var header_index=0;
-        column.forEach((header)=>{
-            if(header_index < len){
-                var headerCell1 = headerRow.insertCell(header_index);
-                headerCell1.innerHTML = header;
-                headerCell1.style.textAlign = 'center';
-                headerCell1.style.width = '50px';
-                headerCell1.style.height = '50px';
-                headerCell1.style.border = '1px solid #ccc';
-                header_index=header_index+1;
-            }
-        });
-        var len1=(d.srcElement.__data__.data).length;
-        var data_treemap=d.srcElement.__data__.data;
-        console.log(d.srcElement.__data__.data);
-        var row = table.insertRow(-1);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        cell1.innerHTML = data_treemap["name"];
-        cell2.innerHTML = data_treemap["value"];
-        cell1.style.border = '1px solid #ccc';
-        cell1.style.textAlign = 'center';
-        cell1.style.width = '50px';
-        cell1.style.height = '50px';
-        cell2.style.border = '1px solid #ccc';
-        cell2.style.textAlign = 'center';
-        cell2.style.width = '50px';
-        cell2.style.height = '50px';
+        console.log(d)
+        var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
+        console.log(links[0].link)
+        tooltip.innerHTML=LookerCharts.Utils.htmlForCell(links[0].link)
+        tooltip.style.display = "block";
+        tooltip.style.position = "absolute";
+        tooltip.style.left = d.pageX + "px";
+        tooltip.style.top = d.pageY + "px";
+        // tooltip.style.background = "rgba(0, 0, 0, 0.8)";
+        // tooltip.style.color = "white";
+        // tooltip.style.padding = "10px";
+        // tooltip.style.borderRadius = "5px";
+        // tooltip.style.transition = "opacity 0.3s ease-in-out";
       });
 
     nodes
