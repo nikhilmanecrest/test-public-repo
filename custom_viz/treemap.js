@@ -164,8 +164,8 @@ looker.plugins.visualizations.add({
 
       queryResponse.fields.measure_like.forEach(function (field) {
         // console.log("qwdiuw")
-        // console.log(row[field.name].links[1])
-        links.push({"label":field.label,"value":row[field.name].value,"link":(row[field.name].links[1])})
+        console.log(row[field.name].links)
+        links.push({"label":field.label,"value":row[field.name].value,"links":(row[field.name].links)})
         column.add(field.label)
         rowData[field.name] = row[field.name].value;
       });
@@ -234,8 +234,8 @@ looker.plugins.visualizations.add({
       .on("click", function (d) {
         console.log(d)
         var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
-        console.log(links[0].link)
-        tooltip.innerHTML=LookerCharts.Utils.htmlForCell(links[0].link)
+        console.log(links[0].links[1].url)
+        tooltip.innerHTML=LookerCharts.Utils.htmlForCell(links[0].links[1].url)
         tooltip.style.display = "block";
         tooltip.style.position = "absolute";
         tooltip.style.left = d.pageX + "px";
