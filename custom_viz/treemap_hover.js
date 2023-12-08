@@ -4,8 +4,8 @@ looker.plugins.visualizations.add({
     var container = element.appendChild(document.createElement("div"));
     container.id = "my-visualization-container";
     // Apply styles to the container
-    container.style.display = 'flex';
-    container.style.flexDirection = 'row'; // Added to align chart and table vertically
+    // container.style.display = 'flex';
+    // container.style.flexDirection = 'row'; // Added to align chart and table vertically
     container.style.width = "100%";
     container.style.height = "100%";
     container.style.overflow = "scroll";
@@ -14,7 +14,7 @@ looker.plugins.visualizations.add({
     treemap.id = "my-visualization-treemap";
     treemap.style.width = "100%"; // Adjust width as needed
     treemap.style.height = "100%";
-    treemap.style.overflow = "scroll"
+    // treemap.style.overflow = "scroll"
     // create tooltip
     var tooltip=container.appendChild(document.createElement("div"));
     tooltip.id = "my-visualization-tooltip";
