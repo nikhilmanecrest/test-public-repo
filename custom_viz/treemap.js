@@ -164,8 +164,8 @@ looker.plugins.visualizations.add({
 
       queryResponse.fields.measure_like.forEach(function (field) {
         // console.log("qwdiuw")
-        console.log(row[field.name].links)
-        links.push({"label":field.label,"value":row[field.name].value,"links":(row[field.name].links)})
+        console.log(row[field.name].links[1])
+        links.push({"value":row[field.name].value,"links":(row[field.name].links[1])})
         column.add(field.label)
         rowData[field.name] = row[field.name].value;
       });
@@ -234,18 +234,20 @@ looker.plugins.visualizations.add({
       .on("click", function (d) {
         console.log(d)
         var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
-        console.log(links[0].links[1].label)
-        var linkElement = document.createElement("a");
-        linkElement.href = links[0].links[1].url;
-        linkElement.textContent = links[0].links[1].label;
-        linkElement.target = "_blank"; // Open link in a new tab/window
-        console.log(linkElement)
-        tooltip.appendChild(linkElement);
-        // tooltip.innerHTML=LookerCharts.Utils.htmlForCell(links[0].links[1].url)
+        // console.log(links[0].links[1].label)
+        // var linkElement = document.createElement("a");
+        // linkElement.href = links[0].links[1].url;
+        // linkElement.textContent = links[0].links[1].label;
+        // linkElement.target = "_blank"; // Open link in a new tab/window
+        // console.log(linkElement)
+        // tooltip.appendChild(linkElement);
+
         tooltip.style.display = "block";
         tooltip.style.position = "absolute";
         tooltip.style.left = d.pageX + "px";
         tooltip.style.top = d.pageY + "px";
+        console.log(links[0])
+        tooltip.innerHTML=LookerCharts.Utils.htmlForCell(links[0]);
         // tooltip.style.background = "rgba(0, 0, 0, 0.8)";
         // tooltip.style.color = "white";
         // tooltip.style.padding = "10px";
