@@ -241,13 +241,11 @@ looker.plugins.visualizations.add({
         // linkElement.target = "_blank"; // Open link in a new tab/window
         // console.log(linkElement)
         // tooltip.appendChild(linkElement);
-
+        tooltip.innerHTML=LookerCharts.Utils.htmlForCell(links[0]);
         tooltip.style.display = "block";
         tooltip.style.position = "absolute";
         tooltip.style.left = d.pageX + "px";
         tooltip.style.top = d.pageY + "px";
-        console.log(links[0])
-        tooltip.innerHTML=LookerCharts.Utils.htmlForCell(links[0]);
         // tooltip.style.background = "rgba(0, 0, 0, 0.8)";
         // tooltip.style.color = "white";
         // tooltip.style.padding = "10px";
