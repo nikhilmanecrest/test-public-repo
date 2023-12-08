@@ -14,11 +14,12 @@ looker.plugins.visualizations.add({
     treemap.id = "my-visualization-treemap";
     treemap.style.width = "100%"; // Adjust width as needed
     treemap.style.height = "100%";
+    treemap.style.overflow = "scroll"
     // create tooltip
     var tooltip=container.appendChild(document.createElement("div"));
     tooltip.id = "my-visualization-tooltip";
     // Initialize the treemap visualization properties
-    this.chart = d3.select(treemap).append("svg").attr("width", "100%").attr("height", "100%").attr("overflow-y","scroll").attr("overflow-x","scroll")
+    this.chart = d3.select(treemap).append("svg").attr("width", "100%").attr("height", "100%");
   },
 
   updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
