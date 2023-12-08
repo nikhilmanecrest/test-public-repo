@@ -234,8 +234,14 @@ looker.plugins.visualizations.add({
       .on("click", function (d) {
         console.log(d)
         var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
-        console.log(links[0].links[1].url)
-        tooltip.innerHTML=LookerCharts.Utils.htmlForCell(links[0].links[1].url)
+        console.log(links[0].links[1].label)
+        var linkElement = document.createElement("a");
+        linkElement.href = links[0].links[1].url;
+        linkElement.textContent = links[0].links[1].label;
+        linkElement.target = "_blank"; // Open link in a new tab/window
+        console.log(linkElement)
+        tooltip.appendChild(linkElement);
+        // tooltip.innerHTML=LookerCharts.Utils.htmlForCell(links[0].links[1].url)
         tooltip.style.display = "block";
         tooltip.style.position = "absolute";
         tooltip.style.left = d.pageX + "px";
