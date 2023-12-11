@@ -13,7 +13,7 @@ looker.plugins.visualizations.add({
     // Create treemap and set its width
     var treemap = container.appendChild(document.createElement("div"));
     treemap.id = "my-visualization-treemap";
-    treemap.style.width = "50%"; // Adjust width as needed
+    treemap.style.width = "100%"; // Adjust width as needed
     treemap.style.height = "100%";
 
     // create tooltip
@@ -26,13 +26,13 @@ looker.plugins.visualizations.add({
     this.chart = d3.select(treemap).append("svg").attr("width", "100%").attr("height", "100%");
 
     // Create a table and set its width
-    var table = container.appendChild(document.createElement('table'));
-    table.id = "my-visualization-table";
-    table.setAttribute('class', 'table');
+    //var table = container.appendChild(document.createElement('table'));
+   // table.id = "my-visualization-table";
+    //table.setAttribute('class', 'table');
     // Applying styling to the table
-    table.style.width = '50%'; // Adjust width as needed
-    table.style.borderCollapse = 'collapse';
-    table.style.marginTop = '20px';
+    //table.style.width = '50%'; // Adjust width as needed
+    //table.style.borderCollapse = 'collapse';
+   // table.style.marginTop = '20px';
   },
 
   updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
