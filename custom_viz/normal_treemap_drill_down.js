@@ -96,20 +96,37 @@ looker.plugins.visualizations.add({
         // Add your custom hover behavior here
         var data_tooltip=d.srcElement.__data__.data;
         d3.select(this).style("opacity", 0.7);
+        var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
+        var column_string=[]
+        column.forEach((header)=>{
+                column_string.push(header)
+            });
+        tooltip.innerHTML = `${column_string[0]}: ${data_tooltip['name']} \n
+                     ${column_string[1]}: ${data_tooltip['value']}`;
+        tooltip.style.display = "block";
+        tooltip.style.position = "absolute";
+        tooltip.style.left = d.pageX + "px";
+        tooltip.style.top = d.pageY + "px";
+        tooltip.style.background = "rgba(0, 0, 0, 0.8)";
+        tooltip.style.color = "white";
+        tooltip.style.padding = "10px";
+        tooltip.style.borderRadius = "5px";
+        tooltip.style.transition = "opacity 0.3s ease-in-out";
       })
       .on("mouseout", function () {
         // Restore the original opacity on mouseout
         d3.select(this).style("opacity", 1);
         var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
-        // tooltip.style.display = "none";
+         tooltip.style.display = "none";
       })
       .on("click", function (d) {
-        var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
-        tooltip.innerHTML=LookerCharts.Utils.htmlForCell(data[0]["offices.count"]);
-        tooltip.style.display = "block";
-        tooltip.style.position = "absolute";
-        tooltip.style.left = d.pageX + "px";
-        tooltip.style.top = d.pageY + "px";
+        //var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
+        // tooltip.innerHTML=
+        LookerCharts.Utils.openDrillMenu({links:data[0]["offices.count"].links,event: {pageX:d.pageX , pageY:d.pageY}});
+        // tooltip.style.display = "block";
+        // tooltip.style.position = "absolute";
+        // tooltip.style.left = d.pageX + "px";
+        // tooltip.style.top = d.pageY + "px";
       });
 
     nodes
