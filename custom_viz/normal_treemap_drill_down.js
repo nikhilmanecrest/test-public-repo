@@ -101,7 +101,7 @@ looker.plugins.visualizations.add({
         // Restore the original opacity on mouseout
         d3.select(this).style("opacity", 1);
         var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
-        tooltip.style.display = "none";
+        # tooltip.style.display = "none";
       })
       .on("click", function (d) {
         var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
