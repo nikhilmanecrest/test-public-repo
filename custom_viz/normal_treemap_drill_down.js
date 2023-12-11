@@ -21,6 +21,7 @@ looker.plugins.visualizations.add({
     tooltip.id = "my-visualization-tooltip";
     tooltip.style.width = "50%"; // Adjust width as needed
     tooltip.style.height = "100%";
+    tooltip.style.display = "display"
     // Initialize the treemap visualization properties
     this.chart = d3.select(treemap).append("svg").attr("width", "100%").attr("height", "100%");
 
