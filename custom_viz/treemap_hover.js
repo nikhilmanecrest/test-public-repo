@@ -23,8 +23,8 @@ looker.plugins.visualizations.add({
     // Apply styles to the SVG
     this.chart.style("width", "100%");
     this.chart.style("height", "100%");
-    this.chart.style("overflow-x", "scroll");
-    this.chart.style("overflow-y", "scroll");
+    //this.chart.style("overflow-x", "scroll");
+    //this.chart.style("overflow-y", "scroll");
         //.attr("width", "100%").attr("height", "100%");
   },
 
@@ -55,7 +55,7 @@ looker.plugins.visualizations.add({
     var height = parentElement.clientHeight; // Use clientHeight for the height
     // Create a color scale
     var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-    var treemap = d3.treemap().size([width * 0.5, height]); // Adjust width as needed
+    var treemap = d3.treemap().size([width, height]); // Adjust width as needed
     // Create hierarchy based on dimensions and measures
     var root = d3.hierarchy({
       children: dataset.map(function (d) {

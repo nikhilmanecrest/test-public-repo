@@ -21,8 +21,8 @@ looker.plugins.visualizations.add({
     tooltip.id = "my-visualization-tooltip";
     // Initialize the treemap visualization properties
     this.chart = d3.select(treemap).append("svg").attr("width", "100%").attr("height", "100%");
-    this.chart.style("overflow-x", "scroll");
-    this.chart.style("overflow-y", "scroll")
+   // this.chart.style("overflow-x", "scroll");
+   // this.chart.style("overflow-y", "scroll")
   },
 
   updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
