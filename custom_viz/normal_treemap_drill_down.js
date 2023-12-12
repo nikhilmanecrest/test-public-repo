@@ -83,6 +83,7 @@ looker.plugins.visualizations.add({
       })
       .on("mouseover", function (d) {
         // Add your custom hover behavior here
+        console.log(d)
         var data_tooltip=d.srcElement.__data__.data;
         d3.select(this).style("opacity", 0.7);
         var tooltip = document.querySelectorAll("#my-visualization-tooltip")[0];
@@ -94,8 +95,19 @@ looker.plugins.visualizations.add({
                      ${column_string[1]}: ${data_tooltip['value']}`;
         tooltip.style.display = "block";
         tooltip.style.position = "absolute";
-        tooltip.style.left = d.pageX + "px";
-        tooltip.style.top = d.pageY + "px";
+
+        if (d.pageX > 250 ) {
+         tooltip.style.left = 50 + "px";
+        }
+        else {
+            tooltip.style.left = d.pageX + "px";
+        }
+        if (d.pageY > 200){
+            tooltip.style.top = 100 + "px";
+        }
+        else {
+            tooltip.style.top = d.pageY + "px";
+          }
         tooltip.style.background = "rgba(0, 0, 0, 0.8)";
         tooltip.style.color = "white";
         tooltip.style.padding = "10px";
