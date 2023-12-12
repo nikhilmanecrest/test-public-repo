@@ -30,17 +30,20 @@ looker.plugins.visualizations.add({
     this.chart.selectAll("*").remove();
     // Extract data from Looker response
     var dataset = [];
+    var field_name=[]
     const column = new Set();
     var links=[]
     data.forEach(function (row) {
       var rowData = {};
       queryResponse.fields.dimension_like.forEach(function (field) {
+        field_name.push(field.name)
         column.add(field.label)
         rowData[field.name] = row[field.name].value;
       });
 
       queryResponse.fields.measure_like.forEach(function (field) {
         links.push({"value":row[field.name].value,"links":(row[field.name].links[1])})
+        field_name.push(field.name)
         column.add(field.label)
         rowData[field.name] = row[field.name].value;
       });
@@ -106,7 +109,13 @@ looker.plugins.visualizations.add({
          tooltip.style.display = "none";
       })
       .on("click", function (d) {
-        LookerCharts.Utils.openDrillMenu({links:data[0]["offices.count"].links,event: {pageX:d.pageX , pageY:d.pageY}});
+        var column_string=[]
+        column.forEach((header)=>{
+                column_string.push(header)
+            });
+        //console.log(field_name)
+        // console.log()
+        LookerCharts.Utils.openDrillMenu({links:data[0][field_name[1]].links,event: {pageX:d.pageX , pageY:d.pageY}});
       });
 
     nodes
