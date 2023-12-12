@@ -109,12 +109,6 @@ looker.plugins.visualizations.add({
          tooltip.style.display = "none";
       })
       .on("click", function (d) {
-        var column_string=[]
-        column.forEach((header)=>{
-                column_string.push(header)
-            });
-        //console.log(field_name)
-        // console.log()
         LookerCharts.Utils.openDrillMenu({links:data[0][field_name[1]].links,event: {pageX:d.pageX , pageY:d.pageY}});
       });
 
