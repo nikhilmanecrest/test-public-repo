@@ -182,5 +182,5 @@ looker.plugins.visualizations.add({
     "NAME": "X",
     "Marks": 1
   }
- 
+
 ]
