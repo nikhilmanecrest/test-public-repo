@@ -1,0 +1,367 @@
+looker.plugins.visualizations.add({
+  create: function(element, config) {
+    // Create a container element for the nested divs
+    var container = element.appendChild(document.createElement("div"));
+    container.id = "my-visualization-container";
+    container.style.width="100%";   
+    container.style.height="100%";
+    container.style.backgroundColor="grey";  
+    container.style.margin="1%";
+    container.style.overflow="scroll";
+    container.style.display="flex";
+    // container.style.flexWrap = 'wrap';
+
+  },
+  componentsCreation: function (container,data) {
+    for (var dataRecord = 0; dataRecord < data.length; dataRecord++) {
+      for(var buRecord=0;buRecord<data[dataRecord]["BU"].length;buRecord++){
+        var buDiv = container.appendChild(document.createElement("div"));
+        buDiv.style.width="95%";
+        buDiv.style.height="100%";
+        buDiv.style.backgroundColor="#3498db";
+        buDiv.style.margin="1%";
+        buDiv.style.display="flex";
+        buDiv.style.flexWrap = 'wrap';
+        var BUName=data[dataRecord]['BU'][0]['BUName'];
+        buDiv.className = `${BUName}`+"bussiness-unit-div";
+        buDiv.textContent = `${data[dataRecord]['BU'][0]['BUName']}`;
+        for(var projectRecord=0;projectRecord<data[dataRecord]["BU"][0]["BUData"].length;projectRecord++){
+          var projectDiv = buDiv.appendChild(document.createElement("div"));
+          var ProjectName=data[dataRecord]["BU"][0]["BUData"][projectRecord]["Project"];
+          projectDiv.className = `${ProjectName}`+"Project-div";
+          projectDiv.style.width="98%";
+          projectDiv.style.height="90%";
+          projectDiv.style.margin="1%";
+          projectDiv.style.backgroundColor="#2ecc71";
+          projectDiv.style.display="flex";
+          projectDiv.style.flexWrap = 'wrap';
+          projectDiv.textContent = ProjectName;
+          var TeamDiv = projectDiv.appendChild(document.createElement("div"));
+          TeamDiv.className = "Team-Project-div";
+          TeamDiv.style.display="flex";
+          TeamDiv.style.flexWrap = 'wrap';
+          TeamDiv.style.flexDirection = 'row';
+          TeamDiv.textContent = "Team";
+          TeamDiv.style.width="98%";
+          TeamDiv.style.height="90%";
+          TeamDiv.style.margin="1%";
+          TeamDiv.style.backgroundColor="#e74c3c";
+          // treemap-div
+          var TreemapDiv = TeamDiv.appendChild(document.createElement("div"));
+          TreemapDiv.className = "Treemap-team-div";
+          TreemapDiv.style.display="flex";
+          TreemapDiv.style.flexWrap = 'wrap';
+          TreemapDiv.style.flexDirection = 'row';
+          TreemapDiv.style.height="90%";
+          TreemapDiv.style.width="100%";
+          TreemapDiv.style.margin="1%";
+          TreemapDiv.style.backgroundColor="#f39c12";
+          var containerWidth = TreemapDiv.clientWidth;
+          var containerHeight = TreemapDiv.clientHeight;
+          var data1=data[0]["BU"][0]["BUData"][0]["team"]
+          this.chart = d3.select(TreemapDiv).append("svg").attr("width", "100%").attr("height", "100%");
+          var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+          var treemap = d3.treemap().size([containerWidth, containerHeight]); // Adjust width as needed
+          var root = d3.hierarchy({
+            children: data1.map(function (d) {
+              return { name: d["Name"], value: d["allocation"] };
+            }),
+          })
+            .sum(function (d) {
+              return d.value;
+            });
+          treemap(root);
+         // Draw rectangles for each node
+          var nodes = this.chart
+            .selectAll(".node")
+            .data(root.leaves())
+            .enter()
+            .append("g")
+            .attr("class", "node")
+            .attr("transform", function (d) {
+              return "translate(" + d.x0 + "," + d.y0 + ")";
+            })
+          nodes
+            .append("rect")
+            .attr("width", function (d) {
+              return d.x1 - d.x0;
+            })
+            .attr("height", function (d) {
+              return d.y1 - d.y0;
+            })
+            .style("fill", function (d, i) {
+              return colorScale(i); // Assign different colors based on the index
+            })
+            .style("stroke", "white");
+          // Add text labels
+          nodes
+            .append("text")
+            .attr("x", function (d) {
+              return (d.x1 - d.x0) / 2;
+            })
+            .attr("y", function (d) {
+              return (d.y1 - d.y0) / 2;
+            })
+            .attr("dy", "0.3em")
+            .style("text-anchor", "middle")
+            .style("fill", "white")
+            .text(function (d) {
+              return d.data.name;
+            });
+            }
+        }
+      }
+  },
+  updateAsync: function(data, element, config, queryResponse, details, doneRendering) {
+    var container = element.querySelector("#my-visualization-container");
+    this.componentsCreation(container,data)
+    doneRendering();
+  }
+});
+
+[
+  {
+    "BU":
+      [
+        {"BUName":"EEBU",
+         "BUData":
+          [
+            {
+              "Project": "APPOMNI",
+              "team": [
+                {
+                  "Name":"Dishank",
+                  "allocation":40
+                  },
+                       {
+                            "Name":"Nikhil",
+                            "allocation":100
+                            },{
+                      
+                            "Name":"Aash",
+                            "allocation":100
+                            },
+                            {
+                           
+                            "Name":"Monil",
+                            "allocation":100
+                            },
+                       {
+                  
+                  "Name":"Monty",
+                  "allocation":40
+                  }
+                      ]
+                  
+              },
+            {
+              "Project": "APPOMNI",
+              "team": [
+                {
+                  "Name":"Dishank",
+                  "allocation":40
+                  },
+                       {
+                            "Name":"Nikhil",
+                            "allocation":100
+                            },{
+                      
+                            "Name":"Aash",
+                            "allocation":100
+                            },
+                            {
+                           
+                            "Name":"Monil",
+                            "allocation":100
+                            },
+                       {
+                  
+                  "Name":"Monty",
+                  "allocation":40
+                  }
+                      ]
+                  
+              },
+            {
+              "Project": "APPOMNI",
+              "team": [
+                {
+                  "Name":"Dishank",
+                  "allocation":40
+                  },
+                       {
+                            "Name":"Nikhil",
+                            "allocation":100
+                            },{
+                      
+                            "Name":"Aash",
+                            "allocation":100
+                            },
+                            {
+                           
+                            "Name":"Monil",
+                            "allocation":100
+                            },
+                       {
+                  
+                  "Name":"Monty",
+                  "allocation":40
+                  }
+                      ]
+                  
+              },
+            {
+              "Project": "APPOMNI",
+              "team": [
+                {
+                  "Name":"Dishank",
+                  "allocation":40
+                  },
+                       {
+                            "Name":"Nikhil",
+                            "allocation":100
+                            },{
+                      
+                            "Name":"Aash",
+                            "allocation":100
+                            },
+                            {
+                           
+                            "Name":"Monil",
+                            "allocation":100
+                            },
+                       {
+                  
+                  "Name":"Monty",
+                  "allocation":40
+                  }
+                      ]
+                  
+              }
+          ]
+        }
+      ]
+  },
+   {
+    "BU":
+      [
+        {"BUName":"EEBU",
+         "BUData":
+          [
+            {
+              "Project": "APPOMNI",
+              "team": [
+                {
+                  "Name":"Dishank",
+                  "allocation":40
+                  },
+                       {
+                            "Name":"Nikhil",
+                            "allocation":100
+                            },{
+                      
+                            "Name":"Aash",
+                            "allocation":100
+                            },
+                            {
+                           
+                            "Name":"Monil",
+                            "allocation":100
+                            },
+                       {
+                  
+                  "Name":"Monty",
+                  "allocation":40
+                  }
+                      ]
+                  
+              },
+            {
+              "Project": "APPOMNI",
+              "team": [
+                {
+                  "Name":"Dishank",
+                  "allocation":40
+                  },
+                       {
+                            "Name":"Nikhil",
+                            "allocation":100
+                            },{
+                      
+                            "Name":"Aash",
+                            "allocation":100
+                            },
+                            {
+                           
+                            "Name":"Monil",
+                            "allocation":100
+                            },
+                       {
+                  
+                  "Name":"Monty",
+                  "allocation":40
+                  }
+                      ]
+                  
+              },
+            {
+              "Project": "APPOMNI",
+              "team": [
+                {
+                  "Name":"Dishank",
+                  "allocation":40
+                  },
+                       {
+                            "Name":"Nikhil",
+                            "allocation":100
+                            },{
+                      
+                            "Name":"Aash",
+                            "allocation":100
+                            },
+                            {
+                           
+                            "Name":"Monil",
+                            "allocation":100
+                            },
+                       {
+                  
+                  "Name":"Monty",
+                  "allocation":40
+                  }
+                      ]
+                  
+              },
+            {
+              "Project": "APPOMNI",
+              "team": [
+                {
+                  "Name":"Dishank",
+                  "allocation":40
+                  },
+                       {
+                            "Name":"Nikhil",
+                            "allocation":100
+                            },{
+                      
+                            "Name":"Aash",
+                            "allocation":100
+                            },
+                            {
+                           
+                            "Name":"Monil",
+                            "allocation":100
+                            },
+                       {
+                  
+                  "Name":"Monty",
+                  "allocation":40
+                  }
+                      ]
+                  
+              }
+          ]
+        }
+      ]
+  }
+]
