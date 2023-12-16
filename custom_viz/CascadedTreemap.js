@@ -12,7 +12,61 @@ looker.plugins.visualizations.add({
     // container.style.flexWrap = 'wrap';
 
   },
-  componentsCreation: function (container,data) {
+  componentsCreation: function (container,data,queryResponse) {
+    if(queryResponse.fields.dimension_like.length !=4){
+        console.log("Only Four dimensions are allowed.")
+      }
+      if(queryResponse.fields.measure_like.length > 0){
+        console.log("Only Four dimensions allowed.")
+      }
+    // console.log(data)
+    var dataset = [];
+
+    data.forEach(function (row) {
+      if(dataset.length ==0){
+        var rowData = {"BU":row[queryResponse.fields.dimension_like[0].name].value,
+                     "BUData":[{
+                       "project":row[queryResponse.fields.dimension_like[1].name].value,
+                       "team":[
+                         {
+                           "name":row[queryResponse.fields.dimension_like[2].name].value,
+                           "allocation":row[queryResponse.fields.dimension_like[3].name].value
+                         }
+                       ]
+                     }]
+      };
+        dataset.push(rowData)
+      }
+      else
+      {
+        dataset.forEach((row1)=>{
+          // console.log(row1["BU"])
+          // console.log(row[queryResponse.fields.dimension_like[0].name].value)
+          if(row1["BU"]==row[queryResponse.fields.dimension_like[0].name].value)
+          {
+            if(row1["BU"]["project"]==row[queryResponse.fields.dimension_like[1].name].value){
+              row1["BU"]["project"]["team"].push({
+                "name":row[queryResponse.fields.dimension_like[2].name].value,
+                "allocation":row[queryResponse.fields.dimension_like[3].name].value
+              })
+
+            }
+          }
+        });
+        dataset.push({"BU":row[queryResponse.fields.dimension_like[0].name].value,
+                     "BUData":[{
+                       "project":row[queryResponse.fields.dimension_like[1].name].value,
+                       "team":[
+                         {
+                           "name":row[queryResponse.fields.dimension_like[2].name].value,
+                           "allocation":row[queryResponse.fields.dimension_like[3].name].value
+                         }
+                       ]
+                     }]
+      })
+      }
+      });
+    console.log(dataset)
     for (var dataRecord = 0; dataRecord < data.length; dataRecord++) {
       for(var buRecord=0;buRecord<data[dataRecord]["BU"].length;buRecord++){
         var buDiv = container.appendChild(document.createElement("div"));
@@ -114,7 +168,7 @@ looker.plugins.visualizations.add({
   },
   updateAsync: function(data, element, config, queryResponse, details, doneRendering) {
     var container = element.querySelector("#my-visualization-container");
-    this.componentsCreation(container,data)
+    this.componentsCreation(container,data,queryResponse)
     doneRendering();
   }
 });
