@@ -23,8 +23,35 @@ looker.plugins.visualizations.add({
     var dataset = [];
 
     data.forEach(function (row) {
-      if(dataset.length ==0){
-        var rowData = {"BU":row[queryResponse.fields.dimension_like[0].name].value,
+      if(dataset.length !=0){
+          console.log("dataset is not equal to 0")
+        dataset.forEach((row1)=>{
+            console.log("Checking whether Same BU or not.")
+          if(row1["BU"]==row[queryResponse.fields.dimension_like[0].name].value)
+          {
+            console.log("Checking whether it is Same project")
+            if(row1["BU"]["project"]==row[queryResponse.fields.dimension_like[1].name].value){
+              row1["BU"]["project"]["team"].push({
+                "name":row[queryResponse.fields.dimension_like[2].name].value,
+                "allocation":row[queryResponse.fields.dimension_like[3].name].value
+              })
+            }
+            else {
+                console.log("Same Bu but Not Same Project.")
+              row1["BUData"].push({
+                       "project":row[queryResponse.fields.dimension_like[1].name].value,
+                       "team":[
+                         {
+                           "name":row[queryResponse.fields.dimension_like[2].name].value,
+                           "allocation":row[queryResponse.fields.dimension_like[3].name].value
+                         }
+                       ]
+                     })
+            }
+          }
+        else{
+            console.log("Not Same BU")
+            var rowData = {"BU":row[queryResponse.fields.dimension_like[0].name].value,
                      "BUData":[{
                        "project":row[queryResponse.fields.dimension_like[1].name].value,
                        "team":[
@@ -36,24 +63,13 @@ looker.plugins.visualizations.add({
                      }]
       };
         dataset.push(rowData)
+        }
+        });
       }
       else
       {
-        dataset.forEach((row1)=>{
-          // console.log(row1["BU"])
-          // console.log(row[queryResponse.fields.dimension_like[0].name].value)
-          if(row1["BU"]==row[queryResponse.fields.dimension_like[0].name].value)
-          {
-            if(row1["BU"]["project"]==row[queryResponse.fields.dimension_like[1].name].value){
-              row1["BU"]["project"]["team"].push({
-                "name":row[queryResponse.fields.dimension_like[2].name].value,
-                "allocation":row[queryResponse.fields.dimension_like[3].name].value
-              })
-
-            }
-          }
-        });
-        dataset.push({"BU":row[queryResponse.fields.dimension_like[0].name].value,
+        console.log("first Time")
+        var rowData = {"BU":row[queryResponse.fields.dimension_like[0].name].value,
                      "BUData":[{
                        "project":row[queryResponse.fields.dimension_like[1].name].value,
                        "team":[
@@ -63,7 +79,8 @@ looker.plugins.visualizations.add({
                          }
                        ]
                      }]
-      })
+      }
+        dataset.push(rowData)
       }
       });
     console.log(dataset)
