@@ -24,20 +24,18 @@ looker.plugins.visualizations.add({
 
     data.forEach(function (row) {
       if(dataset.length !=0){
-          console.log("dataset is not equal to 0")
+        var flag=0;
         dataset.forEach((row1)=>{
-            console.log("Checking whether Same BU or not.")
           if(row1["BU"]==row[queryResponse.fields.dimension_like[0].name].value)
           {
-            console.log("Checking whether it is Same project")
             if(row1["BU"]["project"]==row[queryResponse.fields.dimension_like[1].name].value){
               row1["BU"]["project"]["team"].push({
                 "name":row[queryResponse.fields.dimension_like[2].name].value,
                 "allocation":row[queryResponse.fields.dimension_like[3].name].value
               })
+            flag=1;
             }
             else {
-                console.log("Same Bu but Not Same Project.")
               row1["BUData"].push({
                        "project":row[queryResponse.fields.dimension_like[1].name].value,
                        "team":[
@@ -47,11 +45,11 @@ looker.plugins.visualizations.add({
                          }
                        ]
                      })
+                flag=1;
             }
-          }
-        else{
-            console.log("Not Same BU")
-            var rowData = {"BU":row[queryResponse.fields.dimension_like[0].name].value,
+          }});
+        if(flag==0){
+        dataset.push({"BU":row[queryResponse.fields.dimension_like[0].name].value,
                      "BUData":[{
                        "project":row[queryResponse.fields.dimension_like[1].name].value,
                        "team":[
@@ -61,14 +59,11 @@ looker.plugins.visualizations.add({
                          }
                        ]
                      }]
-      };
-        dataset.push(rowData)
+      })
         }
-        });
       }
       else
       {
-        console.log("first Time")
         var rowData = {"BU":row[queryResponse.fields.dimension_like[0].name].value,
                      "BUData":[{
                        "project":row[queryResponse.fields.dimension_like[1].name].value,
@@ -84,8 +79,9 @@ looker.plugins.visualizations.add({
       }
       });
     console.log(dataset)
-    for (var dataRecord = 0; dataRecord < data.length; dataRecord++) {
-      for(var buRecord=0;buRecord<data[dataRecord]["BU"].length;buRecord++){
+    for (var dataRecord = 0; dataRecord < dataset.length; dataRecord++) {
+        // console.log(dataset[dataRecord])
+      for(var buRecord=0;buRecord<dataset[dataRecord]["BUData"].length;buRecord++){
         var buDiv = container.appendChild(document.createElement("div"));
         buDiv.style.width="95%";
         buDiv.style.height="100%";
@@ -93,12 +89,13 @@ looker.plugins.visualizations.add({
         buDiv.style.margin="1%";
         buDiv.style.display="flex";
         buDiv.style.flexWrap = 'wrap';
-        var BUName=data[dataRecord]['BU'][0]['BUName'];
+        var BUName=dataset[dataRecord]['BU'];
         buDiv.className = `${BUName}`+"bussiness-unit-div";
-        buDiv.textContent = `${data[dataRecord]['BU'][0]['BUName']}`;
-        for(var projectRecord=0;projectRecord<data[dataRecord]["BU"][0]["BUData"].length;projectRecord++){
+        buDiv.textContent = `${dataset[dataRecord]['BU']}`;
+        for(var projectRecord=0;projectRecord<dataset[dataRecord]["BUData"].length;projectRecord++){
           var projectDiv = buDiv.appendChild(document.createElement("div"));
-          var ProjectName=data[dataRecord]["BU"][0]["BUData"][projectRecord]["Project"];
+          var ProjectName=dataset[dataRecord]["BUData"][projectRecord]["project"];
+          console.log(ProjectName)
           projectDiv.className = `${ProjectName}`+"Project-div";
           projectDiv.style.width="98%";
           projectDiv.style.height="90%";
@@ -129,13 +126,14 @@ looker.plugins.visualizations.add({
           TreemapDiv.style.backgroundColor="#f39c12";
           var containerWidth = TreemapDiv.clientWidth;
           var containerHeight = TreemapDiv.clientHeight;
-          var data1=data[0]["BU"][0]["BUData"][0]["team"]
+          var data1=dataset[buRecord]["BUData"][projectRecord]["team"]
+          console.log(data1)
           this.chart = d3.select(TreemapDiv).append("svg").attr("width", "100%").attr("height", "100%");
           var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
           var treemap = d3.treemap().size([containerWidth, containerHeight]); // Adjust width as needed
           var root = d3.hierarchy({
             children: data1.map(function (d) {
-              return { name: d["Name"], value: d["allocation"] };
+              return { name: d["name"], value: d["allocation"] };
             }),
           })
             .sum(function (d) {
