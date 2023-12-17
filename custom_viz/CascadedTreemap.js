@@ -14,7 +14,7 @@ looker.plugins.visualizations.add({
   },
   componentsCreation: function (container,data,queryResponse) {
     // Clear any existing content
-    container.innerHTML="";
+
     if(queryResponse.fields.dimension_like.length !=4){
         console.log("Only Four dimensions are allowed.")
       }
@@ -80,10 +80,10 @@ looker.plugins.visualizations.add({
         dataset.push(rowData)
       }
       });
-    console.log(dataset)
+    // console.log(dataset)
+    container.innerHTML="";
     for (var dataRecord = 0; dataRecord < dataset.length; dataRecord++) {
         // console.log(dataset[dataRecord])
-      for(var buRecord=0;buRecord<dataset[dataRecord]["BUData"].length;buRecord++){
         var buDiv = container.appendChild(document.createElement("div"));
         buDiv.style.width="95%";
         buDiv.style.height="100%";
@@ -97,7 +97,7 @@ looker.plugins.visualizations.add({
         for(var projectRecord=0;projectRecord<dataset[dataRecord]["BUData"].length;projectRecord++){
           var projectDiv = buDiv.appendChild(document.createElement("div"));
           var ProjectName=dataset[dataRecord]["BUData"][projectRecord]["project"];
-          console.log(ProjectName)
+          // console.log(ProjectName)
           projectDiv.className = `${ProjectName}`+"Project-div";
           projectDiv.style.width="98%";
           projectDiv.style.height="90%";
@@ -128,8 +128,8 @@ looker.plugins.visualizations.add({
           TreemapDiv.style.backgroundColor="#f39c12";
           var containerWidth = TreemapDiv.clientWidth;
           var containerHeight = TreemapDiv.clientHeight;
-          var data1=dataset[buRecord]["BUData"][projectRecord]["team"]
-          console.log(data1)
+          var data1=dataset[dataRecord]["BUData"][projectRecord]["team"]
+          // console.log(data1)
           this.chart = d3.select(TreemapDiv).append("svg").attr("width", "100%").attr("height", "100%");
           var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
           var treemap = d3.treemap().size([containerWidth, containerHeight]); // Adjust width as needed
@@ -180,7 +180,7 @@ looker.plugins.visualizations.add({
               return d.data.name;
             });
             }
-        }
+
       }
   },
   updateAsync: function(data, element, config, queryResponse, details, doneRendering) {
