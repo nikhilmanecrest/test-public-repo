@@ -13,6 +13,8 @@ looker.plugins.visualizations.add({
 
   },
   componentsCreation: function (container,data,queryResponse) {
+    // Clear any existing content
+    container.innerHTML="";
     if(queryResponse.fields.dimension_like.length !=4){
         console.log("Only Four dimensions are allowed.")
       }
