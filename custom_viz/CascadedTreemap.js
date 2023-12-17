@@ -3,12 +3,12 @@ looker.plugins.visualizations.add({
     // Create a container element for the nested divs
     var container = element.appendChild(document.createElement("div"));
     container.id = "my-visualization-container";
-    // container.style.width="100%";
-    // container.style.height="100%";
+    container.style.width="100%";
+    container.style.height="100%";
     container.style.backgroundColor="grey";
     container.style.margin="1%";
     container.style.overflow="scroll";
-    // container.style.display="flex";
+    container.style.display="flex";
     // container.style.flexWrap = 'wrap';
 
   },
