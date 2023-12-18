@@ -22,6 +22,69 @@ const visObject = {
     });
   },
   updateAsync: function(data, element, config, queryResponse, details, doneRendering) {
+        var dataset = [];
+
+    data.forEach(function (row) {
+      if(dataset.length !=0){
+        var flag=0;
+        dataset.forEach((row1)=>{
+          if(row1["name"]==row[queryResponse.fields.dimension_like[0].name].value)
+          {
+            if(row1["children"]["name"]==row[queryResponse.fields.dimension_like[1].name].value){
+              row1["children"]["children"].push({
+                "name":row[queryResponse.fields.dimension_like[2].name].value,
+                "value":row[queryResponse.fields.dimension_like[3].name].value
+              })
+            flag=1;
+            }
+            else {
+              row1["children"].push({
+                       "name":row[queryResponse.fields.dimension_like[1].name].value,
+                       "children":[
+                         {
+                           "name":row[queryResponse.fields.dimension_like[2].name].value,
+                           "value":row[queryResponse.fields.dimension_like[3].name].value
+                         }
+                       ]
+                     })
+                flag=1;
+            }
+          }});
+        if(flag==0){
+        dataset.push({"name":row[queryResponse.fields.dimension_like[0].name].value,
+                     "children":[{
+                       "name":row[queryResponse.fields.dimension_like[1].name].value,
+                       "children":[
+                         {
+                           "name":row[queryResponse.fields.dimension_like[2].name].value,
+                           "value":row[queryResponse.fields.dimension_like[3].name].value
+                         }
+                       ]
+                     }]
+      })
+        }
+      }
+      else
+      {
+        var rowData = {
+                    "name":row[queryResponse.fields.dimension_like[0].name].value,
+                     "children":[{
+                       "name":row[queryResponse.fields.dimension_like[1].name].value,
+                       "children":[
+                         {
+                           "name":row[queryResponse.fields.dimension_like[2].name].value,
+                           "value":row[queryResponse.fields.dimension_like[3].name].value
+                         }
+                       ]
+                     }]
+      }
+        dataset.push(rowData)
+      }
+      });
+    console.log(dataset)
+    container.innerHTML="";
+    data=dataset;
+
     // Specify the chart’s dimensions.
     const width = 928;
     const height = 1060;
