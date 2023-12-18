@@ -28,17 +28,17 @@ const visObject = {
       if(dataset.length !=0){
         var flag=0;
         dataset.forEach((row1)=>{
-          if(row1["name"]==row[queryResponse.fields.dimension_like[0].name].value)
+          if(row1["children"]["name"]==row[queryResponse.fields.dimension_like[0].name].value)
           {
-            if(row1["children"]["name"]==row[queryResponse.fields.dimension_like[1].name].value){
-              row1["children"]["children"].push({
+            if(row1["children"]["children"]["name"]==row[queryResponse.fields.dimension_like[1].name].value){
+              row1["children"]["children"]["children"].push({
                 "name":row[queryResponse.fields.dimension_like[2].name].value,
                 "value":row[queryResponse.fields.dimension_like[3].name].value
               })
             flag=1;
             }
             else {
-              row1["children"].push({
+              row1["children"]["children"].push({
                        "name":row[queryResponse.fields.dimension_like[1].name].value,
                        "children":[
                          {
@@ -51,22 +51,9 @@ const visObject = {
             }
           }});
         if(flag==0){
-        dataset.push({"name":row[queryResponse.fields.dimension_like[0].name].value,
-                     "children":[{
-                       "name":row[queryResponse.fields.dimension_like[1].name].value,
-                       "children":[
-                         {
-                           "name":row[queryResponse.fields.dimension_like[2].name].value,
-                           "value":row[queryResponse.fields.dimension_like[3].name].value
-                         }
-                       ]
-                     }]
-      })
-        }
-      }
-      else
-      {
-        var rowData = {
+        dataset.push({
+                    "name":"CDS",
+                    "children":[{
                     "name":row[queryResponse.fields.dimension_like[0].name].value,
                      "children":[{
                        "name":row[queryResponse.fields.dimension_like[1].name].value,
@@ -76,13 +63,30 @@ const visObject = {
                            "value":row[queryResponse.fields.dimension_like[3].name].value
                          }
                        ]
-                     }]
+                     }]}]
+      })
+        }
+      }
+      else
+      {
+        var rowData = {
+                    "name":"CDS",
+                    "children":[{
+                    "name":row[queryResponse.fields.dimension_like[0].name].value,
+                     "children":[{
+                       "name":row[queryResponse.fields.dimension_like[1].name].value,
+                       "children":[
+                         {
+                           "name":row[queryResponse.fields.dimension_like[2].name].value,
+                           "value":row[queryResponse.fields.dimension_like[3].name].value
+                         }
+                       ]
+                     }]}]
       }
         dataset.push(rowData)
       }
       });
     console.log(dataset)
-    container.innerHTML="";
     data=dataset;
 
     // Specify the chart’s dimensions.
@@ -171,6 +175,7 @@ const visObject = {
       .attr("x", 3)
       .attr("y", (d, i, nodes) => `${(i === nodes.length - 1) * 0.3 + 1.1 + i * 0.9}em`);
      var container = element.querySelector("#my-visualization-container");
+     container.innerHTML="";
      container.appendChild(svg.node())
   },
 };
