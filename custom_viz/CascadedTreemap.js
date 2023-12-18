@@ -3,8 +3,8 @@ looker.plugins.visualizations.add({
     // Create a container element for the nested divs
     var container = element.appendChild(document.createElement("div"));
     container.id = "my-visualization-container";
-    container.style.width="100%";
-    container.style.height="100%";
+    container.style.width="1000px";
+    container.style.height="1000px";
     container.style.backgroundColor="grey";
     container.style.margin="1%";
     container.style.overflow="scroll";
@@ -85,12 +85,13 @@ looker.plugins.visualizations.add({
     for (var dataRecord = 0; dataRecord < dataset.length; dataRecord++) {
         // console.log(dataset[dataRecord])
         var buDiv = container.appendChild(document.createElement("div"));
-        buDiv.style.width="95%";
-        buDiv.style.height="100%";
+        console.log("container width",container.clientWidth,"container width",container.clientWidth)
+        buDiv.style.width=container.clientWidth/dataset.length;
+        buDiv.style.height=container.clientHeight/dataset.length;
         buDiv.style.backgroundColor="#3498db";
         buDiv.style.margin="1%";
         buDiv.style.display="flex";
-        buDiv.style.flexWrap = 'wrap';
+        // buDiv.style.flexWrap = 'wrap';
         var BUName=dataset[dataRecord]['BU'];
         buDiv.className = `${BUName}`+"bussiness-unit-div";
         buDiv.textContent = `${dataset[dataRecord]['BU']}`;
@@ -99,8 +100,8 @@ looker.plugins.visualizations.add({
           var ProjectName=dataset[dataRecord]["BUData"][projectRecord]["project"];
           // console.log(ProjectName)
           projectDiv.className = `${ProjectName}`+"Project-div";
-          projectDiv.style.width="98%";
-          projectDiv.style.height="90%";
+          projectDiv.style.width=buDiv.clientWidth/dataset[dataRecord]["BUData"].length;
+          projectDiv.style.height=buDiv.clientHeight/dataset[dataRecord]["BUData"].length;
           projectDiv.style.margin="1%";
           projectDiv.style.backgroundColor="#2ecc71";
           projectDiv.style.display="flex";
@@ -130,7 +131,7 @@ looker.plugins.visualizations.add({
           var containerHeight = TreemapDiv.clientHeight;
           var data1=dataset[dataRecord]["BUData"][projectRecord]["team"]
           // console.log(data1)
-          this.chart = d3.select(TreemapDiv).append("svg").attr("width", "100%").attr("height", "100%");
+          this.chart = d3.select(TreemapDiv).append("svg").attr("width", containerWidth/dataset[dataRecord]["BUData"][projectRecord]["team"].length).attr("height", containerHeight/dataset[dataRecord]["BUData"][projectRecord]["team"].length);
           var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
           var treemap = d3.treemap().size([containerWidth, containerHeight]); // Adjust width as needed
           var root = d3.hierarchy({
