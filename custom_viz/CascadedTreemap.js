@@ -3,8 +3,8 @@ looker.plugins.visualizations.add({
     // Create a container element for the nested divs
     var container = element.appendChild(document.createElement("div"));
     container.id = "my-visualization-container";
-    container.style.width="1000px";
-    container.style.height="1000px";
+    container.style.width="100%";
+    container.style.height="100%";
     container.style.backgroundColor="grey";
     container.style.margin="1%";
     container.style.overflow="scroll";
