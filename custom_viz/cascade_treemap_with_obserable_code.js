@@ -91,8 +91,8 @@ const visObject = {
         });
         data = dataset[0];
         // Specify the chart’s dimensions.
-        const width = "100%";
-        const height = "100%";
+        const width = 928;
+        const height = 1060;
 
         // Replace the color scale with a different interpolator
         const color = d3.scaleSequential([8, 0], d3.interpolateViridis);
