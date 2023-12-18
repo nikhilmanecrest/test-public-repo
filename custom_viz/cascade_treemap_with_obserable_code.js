@@ -22,12 +22,13 @@ const visObject = {
     });
   },
   updateAsync: function(data, element, config, queryResponse, details, doneRendering) {
-        var dataset = [];
-
+    var dataset = [];
     data.forEach(function (row) {
+      // console.log(row)
       if(dataset.length !=0){
         var flag=0;
         dataset.forEach((row1)=>{
+            // console.log(row1)
           if(row1["children"]["name"]==row[queryResponse.fields.dimension_like[0].name].value)
           {
             if(row1["children"]["children"]["name"]==row[queryResponse.fields.dimension_like[1].name].value){
@@ -36,6 +37,7 @@ const visObject = {
                 "value":row[queryResponse.fields.dimension_like[3].name].value
               })
             flag=1;
+            break;
             }
             else {
               row1["children"]["children"].push({
@@ -48,12 +50,12 @@ const visObject = {
                        ]
                      })
                 flag=1;
+                break;
             }
-          }});
+          }
+        })
         if(flag==0){
-        dataset.push({
-                    "name":"CDS",
-                    "children":[{
+        dataset[0]["children"].push({
                     "name":row[queryResponse.fields.dimension_like[0].name].value,
                      "children":[{
                        "name":row[queryResponse.fields.dimension_like[1].name].value,
@@ -63,7 +65,7 @@ const visObject = {
                            "value":row[queryResponse.fields.dimension_like[3].name].value
                          }
                        ]
-                     }]}]
+                     }]
       })
         }
       }
@@ -86,7 +88,7 @@ const visObject = {
         dataset.push(rowData)
       }
       });
-    console.log(dataset)
+    // console.log(dataset[0])
     data=dataset[0];
 
     // Specify the chart’s dimensions.
