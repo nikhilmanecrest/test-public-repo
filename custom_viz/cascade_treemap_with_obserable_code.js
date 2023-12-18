@@ -26,18 +26,26 @@ const visObject = {
         data.forEach(function(row) {
           if (dataset.length != 0) {
                 var flag = 0;
-                dataset.forEach((row1) => {
-                    // console.log(row1)
-                    if (row1["children"]["name"] == row[queryResponse.fields.dimension_like[0].name].value) {
-                        if (row1["children"]["children"]["name"] == row[queryResponse.fields.dimension_like[1].name].value) {
-                            row1["children"]["children"]["children"].push({
+                dataset[0]["children"].forEach((row1) => {
+                    if (row1["name"] == row[queryResponse.fields.dimension_like[0].name].value) {
+                        if (row1["children"]["name"] == row[queryResponse.fields.dimension_like[1].name].value) {
+                            row1["children"]["children"].push({
                                 "name": row[queryResponse.fields.dimension_like[2].name].value,
                                 "value": row[queryResponse.fields.dimension_like[3].name].value
                             })
                             flag = 1;
                             return;
                         } else {
-                            row1["children"]["children"].push({
+                        console.log("Not same project",{
+                                    "name": row[queryResponse.fields.dimension_like[1].name].value,
+                                    "children": [
+                                      {
+                                        "name": row[queryResponse.fields.dimension_like[2].name].value,
+                                        "value": row[queryResponse.fields.dimension_like[3].name].value
+                                      }
+                                    ]
+                                    })
+                            row1["children"].push({
                                     "name": row[queryResponse.fields.dimension_like[1].name].value,
                                     "children": [
                                       {
@@ -64,6 +72,7 @@ const visObject = {
                     })
                 }
             } else {
+                  console.log("First Time");
                 var rowData = {
                     "name": "CDS",
                     "children": [{
@@ -82,8 +91,8 @@ const visObject = {
         });
         data = dataset[0];
         // Specify the chart’s dimensions.
-        const width = 928;
-        const height = 1060;
+        const width = "100%";
+        const height = "100%";
 
         // Replace the color scale with a different interpolator
         const color = d3.scaleSequential([8, 0], d3.interpolateViridis);
