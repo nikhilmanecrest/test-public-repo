@@ -87,7 +87,7 @@ const visObject = {
       }
       });
     console.log(dataset)
-    data=dataset;
+    data=dataset[0];
 
     // Specify the chart’s dimensions.
     const width = 928;
