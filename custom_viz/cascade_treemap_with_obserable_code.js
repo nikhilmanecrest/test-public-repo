@@ -35,7 +35,7 @@ const visObject = {
                                 "value": row[queryResponse.fields.dimension_like[3].name].value
                             })
                             flag = 1;
-                            break;
+                            //break;
                         } else {
                             row1["children"]["children"].push({
                                     "name": row[queryResponse.fields.dimension_like[1].name].value,
@@ -47,7 +47,7 @@ const visObject = {
                                     ]
                                     })
                 flag = 1;
-                break;
+                //break;
                                 }
                             }
                     })
