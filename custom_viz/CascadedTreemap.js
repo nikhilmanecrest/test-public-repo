@@ -1,192 +1,184 @@
-looker.plugins.visualizations.add({
-  create: function(element, config) {
-    // Create a container element for the nested divs
-    var container = element.appendChild(document.createElement("div"));
-    container.id = "my-visualization-container";
-    container.style.width="100%";
-    container.style.height="100%";
-    container.style.backgroundColor="grey";
-    container.style.margin="1%";
-    container.style.overflow="scroll";
-    container.style.display="flex";
-    // container.style.flexWrap = 'wrap';
-
-  },
-  componentsCreation: function (container,data,queryResponse) {
-    // Clear any existing content
-
-    if(queryResponse.fields.dimension_like.length !=4){
-        console.log("Only Four dimensions are allowed.")
-      }
-      if(queryResponse.fields.measure_like.length > 0){
-        console.log("Only Four dimensions allowed.")
-      }
-    // console.log(data)
-    var dataset = [];
-
-    data.forEach(function (row) {
-      if(dataset.length !=0){
-        var flag=0;
-        dataset.forEach((row1)=>{
-          if(row1["BU"]==row[queryResponse.fields.dimension_like[0].name].value)
-          {
-            if(row1["BU"]["project"]==row[queryResponse.fields.dimension_like[1].name].value){
-              row1["BU"]["project"]["team"].push({
-                "name":row[queryResponse.fields.dimension_like[2].name].value,
-                "allocation":row[queryResponse.fields.dimension_like[3].name].value
-              })
-            flag=1;
+const visObject = {
+    create: function(element, config) {
+        var container = element.appendChild(document.createElement("div"));
+        container.id = "my-visualization-container";
+        container.style.width = "100%";
+        container.style.height = "100%";
+    },
+    cascade: function(root, offset) {
+        const x = new Map();
+        const y = new Map();
+        return root.eachAfter(d => {
+            if (d.children) {
+                x.set(d, 1 + d3.max(d.children, c => (c.x1 === d.x1 - offset ? x.get(c) : NaN)));
+                y.set(d, 1 + d3.max(d.children, c => (c.y1 === d.y1 - offset ? y.get(c) : NaN)));
+            } else {
+                x.set(d, 0);
+                y.set(d, 0);
             }
-            else {
-              row1["BUData"].push({
-                       "project":row[queryResponse.fields.dimension_like[1].name].value,
-                       "team":[
-                         {
-                           "name":row[queryResponse.fields.dimension_like[2].name].value,
-                           "allocation":row[queryResponse.fields.dimension_like[3].name].value
-                         }
-                       ]
-                     })
-                flag=1;
+        }).eachBefore(d => {
+            d.x1 -= 2 * offset * x.get(d);
+            d.y1 -= 2 * offset * y.get(d);
+        });
+    },
+    updateAsync: function(data, element, config, queryResponse, details, doneRendering) {
+        var dataset = [];
+        data.forEach(function(row) {
+          if (dataset.length != 0) {
+                var flag = 0;
+                dataset[0]["children"].forEach((row1) => {
+                    if (row1["name"] == row[queryResponse.fields.dimension_like[0].name].value) {
+                        if (row1["children"]["name"] == row[queryResponse.fields.dimension_like[1].name].value) {
+                            row1["children"]["children"].push({
+                                "name": row[queryResponse.fields.dimension_like[2].name].value,
+                                "value": row[queryResponse.fields.dimension_like[3].name].value
+                            })
+                            flag = 1;
+                            return;
+                        } else {
+                        console.log("Not same project",{
+                                    "name": row[queryResponse.fields.dimension_like[1].name].value,
+                                    "children": [
+                                      {
+                                        "name": row[queryResponse.fields.dimension_like[2].name].value,
+                                        "value": row[queryResponse.fields.dimension_like[3].name].value
+                                      }
+                                    ]
+                                    })
+                            row1["children"].push({
+                                    "name": row[queryResponse.fields.dimension_like[1].name].value,
+                                    "children": [
+                                      {
+                                        "name": row[queryResponse.fields.dimension_like[2].name].value,
+                                        "value": row[queryResponse.fields.dimension_like[3].name].value
+                                      }
+                                    ]
+                                    })
+                            flag = 1;
+                            return;
+                                }
+                            }
+                    })
+                if (flag == 0) {
+                    dataset[0]["children"].push({
+                        "name": row[queryResponse.fields.dimension_like[0].name].value,
+                        "children": [{
+                            "name": row[queryResponse.fields.dimension_like[1].name].value,
+                            "children": [{
+                                "name": row[queryResponse.fields.dimension_like[2].name].value,
+                                "value": row[queryResponse.fields.dimension_like[3].name].value
+                            }]
+                        }]
+                    })
+                }
+            } else {
+                  console.log("First Time");
+                var rowData = {
+                    "name": "CDS",
+                    "children": [{
+                        "name": row[queryResponse.fields.dimension_like[0].name].value,
+                        "children": [{
+                            "name": row[queryResponse.fields.dimension_like[1].name].value,
+                            "children": [{
+                                "name": row[queryResponse.fields.dimension_like[2].name].value,
+                                "value": row[queryResponse.fields.dimension_like[3].name].value
+                            }]
+                        }]
+                    }]
+                }
+                dataset.push(rowData)
             }
-          }});
-        if(flag==0){
-        dataset.push({"BU":row[queryResponse.fields.dimension_like[0].name].value,
-                     "BUData":[{
-                       "project":row[queryResponse.fields.dimension_like[1].name].value,
-                       "team":[
-                         {
-                           "name":row[queryResponse.fields.dimension_like[2].name].value,
-                           "allocation":row[queryResponse.fields.dimension_like[3].name].value
-                         }
-                       ]
-                     }]
-      })
-        }
-      }
-      else
-      {
-        var rowData = {"BU":row[queryResponse.fields.dimension_like[0].name].value,
-                     "BUData":[{
-                       "project":row[queryResponse.fields.dimension_like[1].name].value,
-                       "team":[
-                         {
-                           "name":row[queryResponse.fields.dimension_like[2].name].value,
-                           "allocation":row[queryResponse.fields.dimension_like[3].name].value
-                         }
-                       ]
-                     }]
-      }
-        dataset.push(rowData)
-      }
-      });
-    // console.log(dataset)
-    container.innerHTML="";
-    for (var dataRecord = 0; dataRecord < dataset.length; dataRecord++) {
-        // console.log(dataset[dataRecord])
-        var buDiv = container.appendChild(document.createElement("div"));
-        console.log("container width",container.clientWidth,"container width",container.clientWidth)
-        buDiv.style.width=container.clientWidth/dataset.length;
-        buDiv.style.height=container.clientHeight/dataset.length;
-        buDiv.style.backgroundColor="#3498db";
-        buDiv.style.margin="1%";
-        buDiv.style.display="flex";
-        // buDiv.style.flexWrap = 'wrap';
-        var BUName=dataset[dataRecord]['BU'];
-        buDiv.className = `${BUName}`+"bussiness-unit-div";
-        buDiv.textContent = `${dataset[dataRecord]['BU']}`;
-        for(var projectRecord=0;projectRecord<dataset[dataRecord]["BUData"].length;projectRecord++){
-          var projectDiv = buDiv.appendChild(document.createElement("div"));
-          var ProjectName=dataset[dataRecord]["BUData"][projectRecord]["project"];
-          // console.log(ProjectName)
-          projectDiv.className = `${ProjectName}`+"Project-div";
-          projectDiv.style.width=buDiv.clientWidth/dataset[dataRecord]["BUData"].length;
-          projectDiv.style.height=buDiv.clientHeight/dataset[dataRecord]["BUData"].length;
-          projectDiv.style.margin="1%";
-          projectDiv.style.backgroundColor="#2ecc71";
-          projectDiv.style.display="flex";
-          projectDiv.style.flexWrap = 'wrap';
-          projectDiv.textContent = ProjectName;
-          var TeamDiv = projectDiv.appendChild(document.createElement("div"));
-          TeamDiv.className = "Team-Project-div";
-          TeamDiv.style.display="flex";
-          TeamDiv.style.flexWrap = 'wrap';
-          TeamDiv.style.flexDirection = 'row';
-          TeamDiv.textContent = "Team";
-          TeamDiv.style.width="98%";
-          TeamDiv.style.height="90%";
-          TeamDiv.style.margin="1%";
-          TeamDiv.style.backgroundColor="#e74c3c";
-          // treemap-div
-          var TreemapDiv = TeamDiv.appendChild(document.createElement("div"));
-          TreemapDiv.className = "Treemap-team-div";
-          TreemapDiv.style.display="flex";
-          TreemapDiv.style.flexWrap = 'wrap';
-          TreemapDiv.style.flexDirection = 'row';
-          TreemapDiv.style.height="90%";
-          TreemapDiv.style.width="100%";
-          TreemapDiv.style.margin="1%";
-          TreemapDiv.style.backgroundColor="#f39c12";
-          var containerWidth = TreemapDiv.clientWidth;
-          var containerHeight = TreemapDiv.clientHeight;
-          var data1=dataset[dataRecord]["BUData"][projectRecord]["team"]
-          // console.log(data1)
-          this.chart = d3.select(TreemapDiv).append("svg").attr("width", containerWidth/dataset[dataRecord]["BUData"][projectRecord]["team"].length).attr("height", containerHeight/dataset[dataRecord]["BUData"][projectRecord]["team"].length);
-          var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-          var treemap = d3.treemap().size([containerWidth, containerHeight]); // Adjust width as needed
-          var root = d3.hierarchy({
-            children: data1.map(function (d) {
-              return { name: d["name"], value: d["allocation"] };
-            }),
-          })
-            .sum(function (d) {
-              return d.value;
-            });
-          treemap(root);
-         // Draw rectangles for each node
-          var nodes = this.chart
-            .selectAll(".node")
-            .data(root.leaves())
+        });
+        data = dataset[0];
+        // Specify the chart’s dimensions.
+        const width = "100%";
+        const height = "100%";
+
+        // Replace the color scale with a different interpolator
+        const color = d3.scaleSequential([8, 0], d3.interpolateViridis);
+
+        // Create the treemap layout.
+        const treemap = data =>
+            this.cascade(
+                d3
+                .treemap()
+                .size([width, height])
+                .paddingOuter(3)
+                .paddingTop(19)
+                .paddingInner(1)
+                .round(true)(d3.hierarchy(data).sum(d => d.value).sort((a, b) => b.value - a.value)),
+                3 // treemap.paddingOuter
+            );
+        const root = treemap(data);
+
+        // Create the SVG container.
+        const svg = d3
+            .create("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", [0, 0, width, height])
+            .attr("style", "max-width: 100%; height: auto; overflow: visible; font: 10px sans-serif;");
+        // Create the drop shadow.
+        const shadow = svg
+            .append("filter")
+            .attr("id", "shadow")
+            .append("feDropShadow")
+            .attr("flood-opacity", 0.3)
+            .attr("dx", 0)
+            .attr("stdDeviation", 3);
+
+        // Add nodes (with a color rect and a text label).
+        const node = svg
+            .selectAll("g")
+            .data(root.descendants())
             .enter()
             .append("g")
-            .attr("class", "node")
-            .attr("transform", function (d) {
-              return "translate(" + d.x0 + "," + d.y0 + ")";
-            })
-          nodes
-            .append("rect")
-            .attr("width", function (d) {
-              return d.x1 - d.x0;
-            })
-            .attr("height", function (d) {
-              return d.y1 - d.y0;
-            })
-            .style("fill", function (d, i) {
-              return colorScale(i); // Assign different colors based on the index
-            })
-            .style("stroke", "white");
-          // Add text labels
-          nodes
-            .append("text")
-            .attr("x", function (d) {
-              return (d.x1 - d.x0) / 2;
-            })
-            .attr("y", function (d) {
-              return (d.y1 - d.y0) / 2;
-            })
-            .attr("dy", "0.3em")
-            .style("text-anchor", "middle")
-            .style("fill", "white")
-            .text(function (d) {
-              return d.data.name;
-            });
-            }
+            .attr("filter", "url(#shadow)")
+            .attr("transform", d => `translate(${d.x0},${d.y0})`);
 
-      }
-  },
-  updateAsync: function(data, element, config, queryResponse, details, doneRendering) {
-    var container = element.querySelector("#my-visualization-container");
-    this.componentsCreation(container,data,queryResponse)
-    doneRendering();
-  }
-});
+        const format = d3.format(",d");
+        node
+            .append("title")
+            .text(d => `${d.ancestors().reverse().map(d => d.data.name).join("/")}\n${format(d.value)}`);
+
+        node
+            .append("rect")
+            .attr("id", d => (d.nodeUid = `node-${Math.random().toString(36).substr(2, 9)}`).toString())
+            .attr("fill", d => color(d.height))
+            .attr("width", d => d.x1 - d.x0)
+            .attr("height", d => d.y1 - d.y0);
+
+        node
+            .append("clipPath")
+            .attr("id", d => (d.clipUid = `clip-${Math.random().toString(36).substr(2, 9)}`).toString())
+            .append("use")
+            .attr("xlink:href", d => `#${d.nodeUid}`);
+
+        node
+            .append("text")
+            .attr("clip-path", d => `url(#${d.clipUid})`)
+            .selectAll("tspan")
+            .data(d => d.data.name.split(/(?=[A-Z][^A-Z])/g).concat(format(d.value)))
+            .enter()
+            .append("tspan")
+            .attr("fill-opacity", (d, i, nodes) => (i === nodes.length - 1 ? 0.7 : null))
+            .text(d => d);
+
+        node
+            .filter(d => d.children)
+            .selectAll("tspan")
+            .attr("dx", 3)
+            .attr("y", 13);
+
+        node
+            .filter(d => !d.children)
+            .selectAll("tspan")
+            .attr("x", 3)
+            .attr("y", (d, i, nodes) => `${(i === nodes.length - 1) * 0.3 + 1.1 + i * 0.9}em`);
+        var container = element.querySelector("#my-visualization-container");
+        container.innerHTML = "";
+        container.appendChild(svg.node())
+    },
+};
+
+looker.plugins.visualizations.add(visObject);
