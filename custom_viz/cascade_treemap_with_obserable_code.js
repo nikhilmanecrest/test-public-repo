@@ -23,56 +23,64 @@ const visObject = {
     },
     updateAsync: function(data, element, config, queryResponse, details, doneRendering) {
         var dataset = [];
+        // Iterate on each row of data.
         data.forEach(function(row) {
+          // Checking Whether length of dataset is greater than 0 or Not.
           if (dataset.length != 0) {
                 var flag = 0;
-                dataset[0]["children"].forEach((row1) => {
-                    if (row1["name"] == row[queryResponse.fields.dimension_like[0].name].value) {
-                        if (row1["children"]["name"] == row[queryResponse.fields.dimension_like[1].name].value) {
-                            row1["children"]["children"].push({
-                                "name": row[queryResponse.fields.dimension_like[2].name].value,
-                                "value": row[queryResponse.fields.dimension_like[3].name].value
-                            })
-                            flag = 1;
-                            return;
-                        } else {
-                        console.log("Not same project",{
-                                    "name": row[queryResponse.fields.dimension_like[1].name].value,
-                                    "children": [
-                                      {
-                                        "name": row[queryResponse.fields.dimension_like[2].name].value,
-                                        "value": row[queryResponse.fields.dimension_like[3].name].value
-                                      }
-                                    ]
-                                    })
-                            row1["children"].push({
-                                    "name": row[queryResponse.fields.dimension_like[1].name].value,
-                                    "children": [
-                                      {
-                                        "name": row[queryResponse.fields.dimension_like[2].name].value,
-                                        "value": row[queryResponse.fields.dimension_like[3].name].value
-                                      }
-                                    ]
-                                    })
-                            flag = 1;
-                            return;
-                                }
-                            }
-                    })
-                if (flag == 0) {
-                    dataset[0]["children"].push({
-                        "name": row[queryResponse.fields.dimension_like[0].name].value,
-                        "children": [{
-                            "name": row[queryResponse.fields.dimension_like[1].name].value,
-                            "children": [{
-                                "name": row[queryResponse.fields.dimension_like[2].name].value,
-                                "value": row[queryResponse.fields.dimension_like[3].name].value
-                            }]
-                        }]
-                    })
-                }
-            } else {
-                  console.log("First Time");
+        var projectFlag=0;
+                // Iterating over the Existing BU data for Same BU.
+        for(let i=0;i<dataset[0]["children"].length;i++) {
+          ExistingBUData = dataset[0]["children"][i];
+                    // Checking Whether BU is present or not in Existing dataset
+                    if (ExistingBUData["name"] == row[queryResponse.fields.dimension_like[0].name].value) {
+                        // Iterating over Existing BU of Project for Same Project.
+            for(let j=0;j<ExistingBUData["children"].length;j++){
+              ExistingProjectData = ExistingBUData["children"][j]
+              // Checking Whether Project is present or not in Existing dataset.
+              if (ExistingProjectData["name"] == row[queryResponse.fields.dimension_like[1].name].value) {
+                 // adding data into Project. (Same BU & Same Project.)
+                 ExistingProjectData["children"].push({
+                  "name": row[queryResponse.fields.dimension_like[2].name].value,
+                  "value": row[queryResponse.fields.dimension_like[3].name].value
+                })
+                projectFlag = 1;
+                break;
+              }
+            }
+            // Same BU But Not Same Project
+            if(projectFlag==0){
+              ExistingBUData["children"].push({
+                "name": row[queryResponse.fields.dimension_like[1].name].value,
+                "children": [
+                  {
+                  "name": row[queryResponse.fields.dimension_like[2].name].value,
+                  "value": row[queryResponse.fields.dimension_like[3].name].value
+                  }
+                ]
+              });
+              flag=1;
+              break;
+            }
+                    }
+        }
+        // Not Same BU
+
+        if(flag==0 && projectFlag==0){
+          dataset[0]["children"].push({
+            "name": row[queryResponse.fields.dimension_like[0].name].value,
+            "children": [{
+              "name": row[queryResponse.fields.dimension_like[1].name].value,
+              "children": [{
+                "name": row[queryResponse.fields.dimension_like[2].name].value,
+                "value": row[queryResponse.fields.dimension_like[3].name].value
+              }]
+            }]
+          });
+        }
+      }
+            else {
+                // adding first Time data into dataset
                 var rowData = {
                     "name": "CDS",
                     "children": [{
@@ -90,6 +98,7 @@ const visObject = {
             }
         });
         data = dataset[0];
+        console.log(data)
         // Specify the chart’s dimensions.
         const width = 928;
         const height = 1060;
