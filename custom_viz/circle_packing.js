@@ -108,8 +108,9 @@ const visObject = {
         });
         data = dataset[0];
       // Specify the chart’s dimensions.
-        const width = 928;
-        const height = width;
+      var container = element.querySelector("#my-visualization-container");
+        const width = container.clientWidth;
+        const height = container.clientHeight;
 
         // Create the color scale.
         const color = d3.scaleLinear()
@@ -188,7 +189,7 @@ const visObject = {
               .on("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
               .on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
         }
-      var container = element.querySelector("#my-visualization-container");
+
         container.innerHTML = "";
         container.appendChild(svg.node())
     },

@@ -100,8 +100,9 @@ const visObject = {
         data = dataset[0];
         console.log(data)
         // Specify the chart’s dimensions.
-        const width = 928;
-        const height = 1060;
+        var container = element.querySelector("#my-visualization-container");
+        const width = container.clientWidth;
+        const height = container.clientHeight;
 
         // Replace the color scale with a different interpolator
         const color = d3.scaleSequential([8, 0], d3.interpolateViridis);
@@ -184,7 +185,6 @@ const visObject = {
             .selectAll("tspan")
             .attr("x", 3)
             .attr("y", (d, i, nodes) => `${(i === nodes.length - 1) * 0.3 + 1.1 + i * 0.9}em`);
-        var container = element.querySelector("#my-visualization-container");
         container.innerHTML = "";
         container.appendChild(svg.node())
     },
