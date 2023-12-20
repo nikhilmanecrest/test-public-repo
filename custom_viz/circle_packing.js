@@ -5,7 +5,7 @@ const visObject = {
         container.style.width = "100%";
         container.style.height = "100%";
     },
-  zoomTo: function zoomTo(v) {
+  zoomTo: function zoomTo(v,width) {
       const k = width / v[2];
 
       view = v;
@@ -14,14 +14,14 @@ const visObject = {
       node.attr("transform", d => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`);
       node.attr("r", d => d.r * k);
       },
-  zoom: function (event, d) {
+  zoom: function (event, d,width) {
       const focus0 = focus;
       focus = d;
       const transition = svg.transition()
         .duration(event.altKey ? 7500 : 750)
         .tween("zoom", d => {
           const i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2]);
-          return t => zoomTo(i(t));
+          return t => this.zoomTo(i(t),width);
         });
 
       label
@@ -140,7 +140,7 @@ const visObject = {
         .attr("pointer-events", d => !d.children ? "none" : null)
         .on("mouseover", function() { d3.select(this).attr("stroke", "#000"); })
         .on("mouseout", function() { d3.select(this).attr("stroke", null); })
-        .on("click", (event, d) => focus !== d && (zoom(event, d), event.stopPropagation()));
+        .on("click", (event, d) => focus !== d && (this.zoom(event, d,width), event.stopPropagation()));
 
       // Append the text labels.
       const label = svg.append("g")
@@ -155,10 +155,10 @@ const visObject = {
         .text(d => d.data.name);
 
       // Create the zoom behavior and zoom immediately in to the initial focus node.
-      svg.on("click", (event) => this.zoom(event, root));
+      svg.on("click", (event) => this.zoom(event, root,width));
       let focus = root;
       let view;
-      this.zoomTo([focus.x, focus.y, focus.r * 2]);
+      this.zoomTo([focus.x, focus.y, focus.r * 2],width);
         var container = element.querySelector("#my-visualization-container");
         container.innerHTML = "";
         container.appendChild(svg.node())
