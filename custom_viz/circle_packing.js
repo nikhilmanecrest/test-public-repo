@@ -13,8 +13,7 @@ const visObject = {
       label.attr("transform", d => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`);
       node.attr("transform", d => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`);
       node.attr("r", d => d.r * k);
-      }
-
+      },
   zoom: function (event, d) {
       const focus0 = focus;
       focus = d;
@@ -31,7 +30,7 @@ const visObject = {
         .style("fill-opacity", d => d.parent === focus ? 1 : 0)
         .on("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
         .on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
-      }
+      },
     updateAsync: function(data, element, config, queryResponse, details, doneRendering) {
         var dataset = [];
         // Iterate on each row of data.
