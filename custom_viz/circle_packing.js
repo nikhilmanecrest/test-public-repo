@@ -4,6 +4,7 @@ const visObject = {
         container.id = "my-visualization-container";
         container.style.width = "100%";
         container.style.height = "100%";
+        container.style.overflow = "scroll";
     },
   zoomTo: function zoomTo(v,width,label,node) {
       const k = width / v[2];

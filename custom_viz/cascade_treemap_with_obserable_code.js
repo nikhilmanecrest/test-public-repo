@@ -4,6 +4,8 @@ const visObject = {
         container.id = "my-visualization-container";
         container.style.width = "100%";
         container.style.height = "100%";
+        container.style.overflow = "scroll";
+
     },
     cascade: function(root, offset) {
         const x = new Map();
