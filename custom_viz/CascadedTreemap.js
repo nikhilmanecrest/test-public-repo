@@ -91,12 +91,20 @@ looker.plugins.visualizations.add({
         buDiv.style.backgroundColor="#3498db";
         buDiv.style.margin="1%";
         buDiv.style.display="flex";
+        buDiv.style.flexDirection="column";
         // buDiv.style.flexWrap = 'wrap';
         var BUName=dataset[dataRecord]['BU'];
         buDiv.className = `${BUName}`+"bussiness-unit-div";
         buDiv.textContent = `${dataset[dataRecord]['BU']}`;
+        var buDivData = buDiv.appendChild(document.createElement("div"));
+        buDivData.style.width="100%";
+        buDivData.style.height="100%";
+        buDivData.style.backgroundColor="purple";
+        buDivData.style.margin="1%";
+        buDivData.style.display="flex";
+        // buDivData.textContent = `${dataset[dataRecord]['BU']}`;
         for(var projectRecord=0;projectRecord<dataset[dataRecord]["BUData"].length;projectRecord++){
-          var projectDiv = buDiv.appendChild(document.createElement("div"));
+          var projectDiv = buDivData.appendChild(document.createElement("div"));
           var ProjectName=dataset[dataRecord]["BUData"][projectRecord]["project"];
           // console.log(ProjectName)
           projectDiv.className = `${ProjectName}`+"Project-div";
@@ -181,7 +189,6 @@ looker.plugins.visualizations.add({
               return d.data.name;
             });
             }
-
       }
   },
   updateAsync: function(data, element, config, queryResponse, details, doneRendering) {
