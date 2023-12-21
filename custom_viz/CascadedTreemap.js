@@ -97,8 +97,8 @@ looker.plugins.visualizations.add({
         buDiv.className = `${BUName}`+"bussiness-unit-div";
         buDiv.textContent = `${dataset[dataRecord]['BU']}`;
         var buDivData = buDiv.appendChild(document.createElement("div"));
-        buDivData.style.width="100%";
-        buDivData.style.height="100%";
+        buDivData.style.width=container.clientWidth/dataset.length;
+        buDivData.style.height=container.clientHeight/dataset.length;
         buDivData.style.backgroundColor="purple";
         buDivData.style.margin="1%";
         buDivData.style.display="flex";
